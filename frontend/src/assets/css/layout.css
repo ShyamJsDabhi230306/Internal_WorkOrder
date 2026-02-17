@@ -1,0 +1,266 @@
+/* ===============================
+   HARD RESET FOR LAYOUT
+================================ */
+
+/* FORCE MAIN WRAPPER */
+.app-wrapper {
+  display: flex !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  overflow: hidden;
+}
+
+/* ===============================
+   FORCE SIDEBAR WIDTH
+================================ */
+/* .app-wrapper > nav,
+.app-wrapper > nav.dark-sidebar {
+  width: 260px !important;
+  min-width: 260px !important;
+  max-width: 260px !important;
+  position: relative !important;
+  transform: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  border-right: 1px solid #e5e7eb;
+  background: #ffffff;
+  transition: width 0.25s ease, opacity 0.2s ease;
+} */
+
+
+
+/* ===============================
+   SIDEBAR (NORMAL STATE)
+================================ */
+
+.app-wrapper > nav,
+.app-wrapper > nav.dark-sidebar {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  position: relative;
+
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+
+  /* 👇 smooth animation */
+  transition:
+    width 0.35s ease,
+    transform 0.35s ease,
+    opacity 0.25s ease;
+
+  transform: translateX(0);
+  opacity: 1;
+  overflow: hidden;
+}
+
+/* ===============================
+   FORCE CONTENT AREA (FIXED)
+================================ */
+.app-wrapper > .app-content {
+  flex: 1 1 auto !important;     /* ✅ let flex calculate width */
+  width: auto !important;        /* ❌ NO calc() */
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: #f5f7fb;
+ transition: all 0.35s ease;
+}
+
+/* ===============================
+   REMOVE THEME CONTAINERS
+================================ */
+/* =========================================================
+   FULL WIDTH CONTENT WHEN SIDEBAR IS HIDDEN
+========================================================= */
+
+.sidebar-collapsed .page-content,
+.sidebar-collapsed .page-content .container,
+.sidebar-collapsed .page-content .container-fluid,
+.sidebar-collapsed .page-content .row {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+
+/* =========================================================
+   FULL WIDTH CONTENT WHEN SIDEBAR IS HIDDEN
+========================================================= */
+
+.sidebar-collapsed .page-content,
+.sidebar-collapsed .page-content .container,
+.sidebar-collapsed .page-content .container-fluid,
+.sidebar-collapsed .page-content .row {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.page-content{
+    margin-top: 20px!important;
+}
+/* =========================================================
+   PAGE HEADER SPACING WHEN SIDEBAR IS COLLAPSED
+========================================================= */
+
+.sidebar-collapsed .page-content {
+  padding-left: 32px !important;
+  padding-right: 32px !important;
+}
+
+/* ===============================
+   PAGE CONTENT FIX
+================================ */
+.page-content {
+  padding: 24px !important;
+}
+
+/* ===============================
+   FIX HEADER GAP
+================================ */
+header,
+.header-main,
+.topbar {
+  margin: 0 !important;
+  padding: 0 24px !important;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+ 
+}
+
+/* ===============================
+   SIDEBAR LINKS
+================================ */
+.sidebar-link,
+nav a {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px !important;
+  margin: 4px 10px !important;
+  border-radius: 10px;
+  color: #334155 !important;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+nav a:hover {
+  background: #f1f5f9;
+}
+
+nav a.active {
+  background: rgba(72, 190, 206, 0.18) !important;
+  color: rgb(72, 190, 206) !important;
+  font-weight: 600;
+}
+
+/* ===============================
+   MOBILE SAFETY
+================================ */
+/* @media (max-width: 992px) {
+  .app-wrapper > nav {
+    width: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .app-wrapper > .app-content {
+    width: 100% !important;
+  }
+} */
+
+
+@media (max-width: 992px) {
+  .app-wrapper:not(.sidebar-open) > nav {
+    width: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .app-wrapper.sidebar-open > nav {
+    width: 260px !important;
+    min-width: 260px !important;
+  }
+}
+
+/* =========================================================
+   SIDEBAR TOGGLE SUPPORT (WORKING)
+========================================================= */
+
+/* Hide sidebar */
+/* .sidebar-collapsed > nav,
+.sidebar-collapsed > nav.dark-sidebar {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  border-right: none !important;
+} */
+
+
+/* ===============================
+   SIDEBAR COLLAPSED (ANIMATED)
+================================ */
+
+/* .sidebar-collapsed > nav,
+.sidebar-collapsed > nav.dark-sidebar {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+
+  transform: translateX(-100%);
+  opacity: 0;
+
+  overflow: hidden;
+  border-right: none;
+} */
+
+.sidebar-collapsed > nav,
+.sidebar-collapsed > nav.dark-sidebar {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  transform: translateX(-100%);
+  opacity: 0;
+  overflow: hidden;
+  border-right: none;
+}
+
+.sidebar-collapsed > .app-content {
+  width: 100% !important;
+}
+
+/* Content full width when sidebar hidden */
+.sidebar-collapsed > .app-content {
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+
+/* ===============================
+   DESKTOP SAFETY (PREVENT AUTO COLLAPSE)
+================================ */
+@media (min-width: 993px) {
+  .app-wrapper > nav,
+  .app-wrapper > nav.dark-sidebar {
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+  }
+}
+
+
+@media (min-width: 993px) {
+  .app-wrapper > nav {
+    width: 260px !important;
+    min-width: 260px !important;
+  }
+}

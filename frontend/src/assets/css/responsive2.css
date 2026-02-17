@@ -1,0 +1,163 @@
+/* =========================================================
+   GLOBAL RESPONSIVE LAYOUT
+========================================================= */
+
+/* ---------- BASE SAFETY ---------- */
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* =========================================================
+   TOPBAR (MOBILE FRIENDLY)
+========================================================= */
+
+@media (max-width: 992px) {
+  header,
+  .header-main {
+    padding: 0 12px !important;
+  }
+
+  .header-main .fw-semibold {
+    font-size: 14px;
+  }
+
+  .header-main button {
+    padding: 4px 8px;
+  }
+}
+
+/* =========================================================
+   SIDEBAR RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+  .app-wrapper {
+    flex-direction: column;
+  }
+
+  .app-wrapper > nav {
+    position: fixed !important;
+    left: 0;
+    top: 60px;
+    height: calc(100vh - 60px);
+    z-index: 1050;
+    background: #fff;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Sidebar hidden by default on mobile */
+  .app-wrapper:not(.sidebar-collapsed) > nav {
+    width: 260px !important;
+  }
+
+  .sidebar-collapsed > nav {
+    width: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* =========================================================
+   CONTENT AREA RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+  .app-content {
+    width: 100% !important;
+    padding-top: 60px !important;
+  }
+
+  .page-content {
+    padding: 16px !important;
+  }
+}
+
+/* =========================================================
+   PAGE TITLES
+========================================================= */
+
+@media (max-width: 768px) {
+  .page-content h1,
+  .page-content h2,
+  .page-content h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+}
+
+/* =========================================================
+   FORMS RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .row > [class*="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   TABLE RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    font-size: 13px;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+}
+
+/* =========================================================
+   CARD & BOX RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 16px;
+  }
+
+  .card-body {
+    padding: 12px;
+  }
+}
+
+/* =========================================================
+   BUTTONS RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .btn {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+}
+
+/* =========================================================
+   HIDE NON-ESSENTIAL TEXT ON MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+  .text-muted,
+  .breadcrumb {
+    display: none;
+  }
+}

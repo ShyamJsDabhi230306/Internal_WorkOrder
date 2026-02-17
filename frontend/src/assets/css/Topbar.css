@@ -1,0 +1,18 @@
+.header-main {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 60px!important;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(72, 190, 206, 0.15);
+  color: #48bece;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
