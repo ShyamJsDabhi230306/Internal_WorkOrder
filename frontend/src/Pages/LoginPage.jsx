@@ -192,12 +192,12 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
 
       const userObj = {
-        userId: data.user.userId,
-        userName: data.user.userName,
-        fullName: data.user.userFullName,
-        userTypeId: data.user.userTypeId,
-        divisionId: data.user.divisionId,
-        vendorId: data.user.vendorId,
+        userId: data.user.userId || data.user.UserId,
+        userName: data.user.userName || data.user.UserName,
+        fullName: data.user.userFullName || data.user.UserFullName,
+        userTypeId: data.user.userTypeId || data.user.UserTypeId,
+        divisionId: data.user.divisionId || data.user.DivisionId,
+        vendorId: data.user.vendorId || data.user.VendorId,
       };
 
       login(userObj);
@@ -206,7 +206,7 @@ export default function LoginPage() {
       if (userObj.userTypeId === 1) navigate("/company");
       else if (userObj.userTypeId === 2) navigate("/workorder");
       else if (userObj.userTypeId === 3)
-        navigate("/workordermanage", { replace: true });
+        navigate("/workordermanage/accept", { replace: true });
 
     } catch (err) {
       setMsg("Invalid username or password");

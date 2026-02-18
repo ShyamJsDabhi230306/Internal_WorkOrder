@@ -3,8 +3,10 @@ import Layout from "../../layout/Layout";
 import { getWorkOrders, updateWorkOrderStatus } from "../../API/workOrderApi";
 import POFileActions from "../../Components/POFileActions";
 import { toast } from "react-toastify";
+import { useAuth } from "../../API/AuthContext";
 
 export default function WorkOrderManageAccept() {
+  const { auth } = useAuth();
   const [pendingList, setPendingList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
   const [search, setSearch] = useState("");
@@ -21,31 +23,32 @@ export default function WorkOrderManageAccept() {
 
   const loadData = async () => {
     const data = await getWorkOrders();
+    console.log("API DATA:", data);
 
-    // Only Pending OR Accepted but not dispatched
-    const sorted = data
-      .filter(wo => wo.status === "Pending")
+    const sorted = (data || [])
+      .filter(wo => wo.status?.trim().toLowerCase() === "pending")
       .sort((a, b) => b.workOrderId - a.workOrderId);
 
     setPendingList(sorted);
     setFilteredList(sorted);
   };
 
+
   // const formatDate = d => (d ? d.slice(0, 10) : "-");
 
   const formatDate = (v) => {
-  if (!v) return "";
+    if (!v) return "";
 
-  // works for "2026-01-07", ISO string, Date object
-  const d = new Date(v);
-  if (isNaN(d)) return v?.slice?.(0, 10) || "";
+    // works for "2026-01-07", ISO string, Date object
+    const d = new Date(v);
+    if (isNaN(d)) return v?.slice?.(0, 10) || "";
 
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
 
-  return `${dd}-${mm}-${yyyy}`;
-};
+    return `${dd}-${mm}-${yyyy}`;
+  };
 
 
   const applySearch = () => {
@@ -62,21 +65,64 @@ export default function WorkOrderManageAccept() {
     setFilteredList(filtered);
   };
 
-  const handleAccept = async (wo) => {
-    if (!acceptDates[wo.workOrderId])
-      // return alert("Select Accept Delivery Date");
-    return toast.warning("Select Accept Delivery Date")
+  // const handleAccept = async (wo) => {
+  //   if (!acceptDates[wo.workOrderId]) {
+  //     return toast.warning("Select Accept Delivery Date");
+  //   }
 
-    const dto = {
-      acceptDeliveryDate: acceptDates[wo.workOrderId],
-    };
+  //   const vId = auth?.vendorId || auth?.VendorId;
 
-    await updateWorkOrderStatus(wo.workOrderId, dto);
-    // alert("Accepted");
-    toast.success("Accepted Successfully!")
+  //   if (!vId) {
+  //     return toast.error("Vendor ID not found for current user. Please log in again.");
+  //   }
 
-    loadData();
+  //   const dto = {
+  //     acceptDeliveryDate: acceptDates[wo.workOrderId],
+  //   };
+
+  //   console.log("Accepting WorkOrder:", { id: wo.workOrderId, vendorId: vId, dto });
+
+  //   try {
+  //     await updateWorkOrderStatus(wo.workOrderId, vId, dto);
+  //     toast.success("Accepted Successfully!");
+  //     loadData();
+  //   } catch (err) {
+  //     console.error("Acceptance error:", err);
+  //     const errorMsg = err.response?.data?.message || err.response?.data || "Acceptance failed";
+  //     toast.error(errorMsg);
+  //   }
+  // };
+const handleAccept = async (wo) => {
+  const vendorId = auth?.vendorId ?? auth?.VendorId;
+
+  if (!vendorId) {
+    toast.error("Vendor ID missing. Please login again.");
+    return;
+  }
+
+  const acceptDate = acceptDates[wo.workOrderId];
+
+  if (!acceptDate) {
+    toast.warning("Select Accept Delivery Date");
+    return;
+  }
+
+  const dto = {
+    vendorId: Number(vendorId),
+    acceptDeliveryDate: acceptDate,
   };
+
+  console.log("Sending DTO:", dto);
+
+  try {
+    await updateWorkOrderStatus(wo.workOrderId, dto);
+    toast.success("Accepted Successfully!");
+    loadData();
+  } catch (err) {
+    console.log("ERROR RESPONSE:", err.response?.data);
+    toast.error(err.response?.data || "Acceptance failed");
+  }
+};
 
   return (
     <Layout>

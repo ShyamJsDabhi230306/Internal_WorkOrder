@@ -13,7 +13,7 @@ namespace WorkOderManagementSystem.Repository.Interfaces
         // Updated to return DTO
         Task<IEnumerable<WorkOrderListDto>> GetAllWithVendorAsync(int userTypeId, int? divisionId, int? vendorId);
         //Task<IEnumerable<WorkOrderListDto>> GetAllAsync();
-        Task<bool> AcceptWorkOrderAsync(int id, AcceptWorkOrderDto dto);
+        Task<bool> AcceptWorkOrderAsync(int id, int vendorId, AcceptWorkOrderDto dto);
         Task<bool> DispatchWorkOrderAsync(int workOrderId, DispatchWorkOrderDto dto);
         Task<bool> DispatchProductAsync(int workOrderId, int productId, DispatchWorkOrderDto dto);
         Task<bool> ReceiveWorkOrderAsync(int id);

@@ -203,7 +203,7 @@ namespace WorkOderManagementSystem.Repository.Repositories
                 var entity = new WorkOrder
                 {
                     WorkOrderNo = await GenerateWorkOrderNo(dto.DivisionId),
-                    VendorId = dto.VendorId,
+                    VendorId = dto.VendorId == 0 ? null : dto.VendorId, 
                     OrderTypeId = dto.OrderTypeId,
                     WoPriorityId = dto.WoPriorityId,
                     WorkOrderDate = dto.WorkOrderDate,
@@ -218,9 +218,6 @@ namespace WorkOderManagementSystem.Repository.Repositories
                     POAttachmentPath = poAttachmentPath,
 
                     Status = "Pending",
-
-
-
                 };
 
                 // IMPORTANT: ensure collection exists
@@ -340,11 +337,12 @@ namespace WorkOderManagementSystem.Repository.Repositories
         // =============================
         // ACCEPT WORK ORDER
         // =============================
-        public async Task<bool> AcceptWorkOrderAsync(int id, AcceptWorkOrderDto dto)
+        public async Task<bool> AcceptWorkOrderAsync(int id, int vendorId, AcceptWorkOrderDto dto)
         {
             var wo = await _context.WorkOrders.FindAsync(id);
             if (wo == null) return false;
 
+            wo.VendorId = vendorId;
             wo.Status = "Accepted";
             wo.AcceptDate = DateTime.Now;
             wo.AcceptDeliveryDate = dto.AcceptDeliveryDate;
@@ -666,10 +664,18 @@ namespace WorkOderManagementSystem.Repository.Repositories
                 query = query.Where(w => w.DivisionId == divisionId.Value);
             }
 
-            if (userTypeId == 3 && vendorId.HasValue)
+            if (userTypeId == 3)
             {
-                // ⭐ Vendor user should only see their own vendor work orders
-                query = query.Where(w => w.VendorId == vendorId.Value);
+                if (vendorId.HasValue && vendorId.Value != 0)
+                {
+                    // Regular filter: All pending + specifically mine
+                    query = query.Where(w => w.Status == "Pending" || w.VendorId == vendorId.Value);
+                }
+                else
+                {
+                    // Global pool request (vendorId is null): See ALL pending
+                    query = query.Where(w => w.Status == "Pending");
+                }
             }
 
             return await query
@@ -678,7 +684,7 @@ namespace WorkOderManagementSystem.Repository.Repositories
                 {
                     WorkOrderId = w.WorkOrderId,
                     WorkOrderNo = w.WorkOrderNo,
-                    VendorName = w.Vendor.VendorName,
+                    VendorName = w.Vendor != null ? w.Vendor.VendorName : "Unassigned",
                     OrderTypeName = w.OrderType.OrderTypeName,
                     PriorityType = w.WoPriority.WoPriorityType1,
                     WorkOrderDate = w.WorkOrderDate,

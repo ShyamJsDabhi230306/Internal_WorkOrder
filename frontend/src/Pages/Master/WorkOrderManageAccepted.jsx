@@ -18,7 +18,8 @@ export default function WorkOrderManageAccepted() {
   }, [search, acceptedList]);
 
   const loadData = async () => {
-    const data = await getAcceptedWorkOrders();
+    const user = JSON.parse(localStorage.getItem("auth") || "{}");
+    const data = await getAcceptedWorkOrders(user.userTypeId, user.divisionId, user.vendorId);
 
     const sorted = data.sort(
       (a, b) => b.workOrderId - a.workOrderId
@@ -28,21 +29,21 @@ export default function WorkOrderManageAccepted() {
     setFilteredList(sorted);
   };
 
-//   const formatDate = (d) => (d ? d.slice(0, 10) : "-");
+  //   const formatDate = (d) => (d ? d.slice(0, 10) : "-");
 
-const formatDate = (v) => {
-  if (!v) return "";
+  const formatDate = (v) => {
+    if (!v) return "";
 
-  // works for "2026-01-07", ISO string, Date object
-  const d = new Date(v);
-  if (isNaN(d)) return v?.slice?.(0, 10) || "";
+    // works for "2026-01-07", ISO string, Date object
+    const d = new Date(v);
+    if (isNaN(d)) return v?.slice?.(0, 10) || "";
 
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
 
-  return `${dd}-${mm}-${yyyy}`;
-};
+    return `${dd}-${mm}-${yyyy}`;
+  };
 
 
   const applySearch = () => {

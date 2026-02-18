@@ -69,10 +69,10 @@ namespace WorkOderManagementSystem.Controllers
             return Ok(data);
         }
 
-        [HttpPut("accept/{id}")]
-        public async Task<IActionResult> Accept(int id, [FromBody] AcceptWorkOrderDto dto)
+        [HttpPut("accept/{id}/{vendorId}")]
+        public async Task<IActionResult> Accept(int id, int vendorId, [FromBody] AcceptWorkOrderDto dto)
         {
-            var ok = await _repo.AcceptWorkOrderAsync(id, dto);
+            var ok = await _repo.AcceptWorkOrderAsync(id, vendorId, dto);
             if (!ok) return BadRequest("Accept failed");
             return Ok("Accepted");
         }
@@ -132,10 +132,6 @@ namespace WorkOderManagementSystem.Controllers
             // ========== VENDOR USER (3) ==========
             if (userTypeId == 3)
             {
-                if (!vendorId.HasValue || vendorId == 0)
-                    return BadRequest("VendorId is required for vendor users");
-
-                // Repo already filtered, return final filtered list
                 return Ok(list);
             }
 

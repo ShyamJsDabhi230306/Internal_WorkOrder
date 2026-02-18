@@ -7,7 +7,7 @@ namespace WorkOderManagementSystem.ALLDTO
     {
         public int WorkOrderId { get; set; }
         public string? WorkOrderNo { get; set; }
-        public int VendorId { get; set; }
+        public int? VendorId { get; set; }
         public int OrderTypeId { get; set; }
         public int WoPriorityId { get; set; }
         public DateTime WorkOrderDate { get; set; }

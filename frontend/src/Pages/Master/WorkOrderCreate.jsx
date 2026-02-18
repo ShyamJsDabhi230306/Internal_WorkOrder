@@ -15,8 +15,10 @@ import { getPriorities } from "../../API/priorityApi";
 import { getOrderTypes } from "../../API/orderTypeApi";
 import POAttachment from "../../Components/POAttachment";
 import { toast } from "react-toastify";
+import { useAuth } from "../../API/AuthContext";
 
 export default function WorkOrderCreate() {
+  const { auth } = useAuth();
   const [workOrders, setWorkOrders] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [orderTypes, setOrderTypes] = useState([]);
@@ -25,8 +27,8 @@ export default function WorkOrderCreate() {
   const [products, setProducts] = useState({});
   const [poFile, setPoFile] = useState(null);
 
-  const loginData = JSON.parse(localStorage.getItem("user") || "{}");
-  const loginUser = loginData.fullName || "Unknown User";
+  const loginUser = auth?.fullName || "Unknown User";
+  const divisionId = auth?.divisionId || 0;
 
 
   const emptyForm = {
@@ -156,17 +158,15 @@ export default function WorkOrderCreate() {
   //   }));
   //   await fetchPreviewNo();
   // };
-const fetchPreviewNo = async () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const divisionId = Number(user.divisionId || 0);
-  if (!divisionId) return;
+  const fetchPreviewNo = async () => {
+    if (!divisionId) return;
 
-  const res = await previewWorkOrderNo(divisionId);
-  setForm((prev) => ({
-    ...prev,
-    workOrderNo: res?.workOrderNo || "",
-  }));
-};
+    const res = await previewWorkOrderNo(divisionId);
+    setForm((prev) => ({
+      ...prev,
+      workOrderNo: res?.workOrderNo || "",
+    }));
+  };
 
   useEffect(() => {
     fetchPreviewNo().catch(console.error);
@@ -285,80 +285,80 @@ const fetchPreviewNo = async () => {
   //   await fetchPreviewNo();
   // };
 
-const handleSave = async () => {
-  try {
-    const isAgainstOrder = Number(form.orderTypeId) === 1;
+  const handleSave = async () => {
+    try {
+      const isAgainstOrder = Number(form.orderTypeId) === 1;
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const divisionId = Number(user.divisionId || 0);
+      if (!divisionId) {
+        alert("Division missing");
+        return;
+      }
 
-    if (!divisionId) {
-      alert("Division missing");
-      return;
+      // if (!form.vendorId || !form.orderTypeId) {
+      //   alert("Please select Vendor and Order Type");
+      //   return;
+      // }
+
+
+      if (!form.products.length) {
+        alert("Please add at least one product");
+        return;
+      }
+
+      const fd = new FormData();
+
+      // ===== SIMPLE FIELDS =====
+    if (form.vendorId !== "" && form.vendorId !== null && form.vendorId !== undefined) {
+  fd.append("VendorId", Number(form.vendorId));
+}
+      fd.append("OrderTypeId", form.orderTypeId);
+      fd.append("WoPriorityId", 1);
+      fd.append("DivisionId", divisionId);
+      fd.append("WorkOrderDate", form.workOrderDate);
+      fd.append("DeliveryDate", form.deliveryDate);
+      fd.append("PreparedBy", loginUser);
+      fd.append("Address", "Ahmedabad");
+
+      // ===== PO FIELDS =====
+      if (isAgainstOrder) {
+        fd.append("PoNo", form.poNo || "");
+        fd.append("PoDate", form.poDate || "");
+        fd.append("AuthorizedPerson", form.authorizedPerson || "");
+      }
+
+      // ===== FILE =====
+      if (poFile) {
+        fd.append("PoAttachment", poFile);
+      }
+
+      // ===== PRODUCTS =====
+      form.products.forEach((p, i) => {
+        fd.append(`Products[${i}].CategoryId`, p.categoryId);
+        fd.append(`Products[${i}].ProductId`, p.productId);
+        fd.append(`Products[${i}].Quantity`, p.quantity);
+      });
+
+      // 🚀 CALL API
+      const res = await createWorkOrder(fd);
+
+      toast.success(`Work Order Created Successfully: ${res.workOrderNo}`);
+
+      setForm({
+        ...emptyForm,
+        workOrderNo: res.workOrderNo,
+      });
+
+      loadData();
+      await fetchPreviewNo();
+
+    } catch (err) {
+      console.error(err);
+      alert(
+        err.response?.data?.message ||
+        "Failed to create work order"
+      );
     }
-
-    if (!form.vendorId || !form.orderTypeId) {
-      alert("Please select Vendor and Order Type");
-      return;
-    }
-
-    if (!form.products.length) {
-      alert("Please add at least one product");
-      return;
-    }
-
-    const fd = new FormData();
-
-    // ===== SIMPLE FIELDS =====
-    fd.append("VendorId", form.vendorId);
-    fd.append("OrderTypeId", form.orderTypeId);
-    fd.append("WoPriorityId", 1);
-    fd.append("DivisionId", divisionId);
-    fd.append("WorkOrderDate", form.workOrderDate);
-    fd.append("DeliveryDate", form.deliveryDate);
-    fd.append("PreparedBy", loginUser);
-    fd.append("Address", "Ahmedabad");
-
-    // ===== PO FIELDS =====
-    if (isAgainstOrder) {
-      fd.append("PoNo", form.poNo || "");
-      fd.append("PoDate", form.poDate || "");
-      fd.append("AuthorizedPerson", form.authorizedPerson || "");
-    }
-
-    // ===== FILE =====
-    if (poFile) {
-      fd.append("PoAttachment", poFile);
-    }
-
-    // ===== PRODUCTS =====
-    form.products.forEach((p, i) => {
-      fd.append(`Products[${i}].CategoryId`, p.categoryId);
-      fd.append(`Products[${i}].ProductId`, p.productId);
-      fd.append(`Products[${i}].Quantity`, p.quantity);
-    });
-
-    // 🚀 CALL API
-    const res = await createWorkOrder(fd);
-
-    toast.success(`Work Order Created Successfully: ${res.workOrderNo}`);
-
-    setForm({
-      ...emptyForm,
-      workOrderNo: res.workOrderNo,
-    });
-
-    loadData();
-    await fetchPreviewNo();
-
-  } catch (err) {
-    console.error(err);
-    alert(
-      err.response?.data?.message ||
-      "Failed to create work order"
-    );
-  }
-};
+  };
 
 
 
@@ -428,7 +428,7 @@ const handleSave = async () => {
                 onChange={(e) => setForm({ ...form, poNo: e.target.value })}
               />
             </div>
-           <POAttachment  onChange={setPoFile} />
+            <POAttachment onChange={setPoFile} />
 
             <div className="col-md-4">
               <label className="fw-semibold">PO Date</label>
@@ -492,7 +492,7 @@ const handleSave = async () => {
 
           </div>
 
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
             <label className="fw-semibold">Vendor</label>
             <select
               className="form-select form-select-lg"
@@ -506,7 +506,7 @@ const handleSave = async () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
         </div>
 
         {/* PRODUCT TABLE */}

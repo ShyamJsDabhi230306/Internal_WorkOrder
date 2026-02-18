@@ -135,7 +135,7 @@ export default function App() {
             <Route path="edit/:id" element={<WorkOrderEdit />} />
           </Route>
 
-          
+
           {/* ===== WORK ORDER MANAGE ===== */}
           <Route
             path="/workordermanage"
@@ -158,7 +158,7 @@ export default function App() {
               </PermissionRoute>
             }
           />
-            <Route
+          <Route
             path="/workordermanage/accepted"
             element={
               <PermissionRoute menuKey="WorkOrderManage">

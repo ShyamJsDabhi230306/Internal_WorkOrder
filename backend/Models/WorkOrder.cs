@@ -9,7 +9,7 @@ public partial class WorkOrder
 
     public string WorkOrderNo { get; set; } = null!;
 
-    public int VendorId { get; set; }
+    public int? VendorId { get; set; }
 
     public int OrderTypeId { get; set; }
 
@@ -43,7 +43,7 @@ public partial class WorkOrder
 
     public virtual OrderType OrderType { get; set; } = null!;
 
-    public virtual Vendor Vendor { get; set; } = null!;
+    public virtual Vendor? Vendor { get; set; }
 
     public virtual WoPriorityType WoPriority { get; set; } = null!;
     public virtual Division Division { get; set; }
