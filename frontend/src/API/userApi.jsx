@@ -19,8 +19,9 @@ export const createUser = async (user) => {
     password: user.password,
     userRemark: user.userRemark,
     divisionId: user.divisionId,
+    locationId: user.locationId,
     userTypeId: user.userTypeId,
-    vendorId: user.vendorId ?? null
+    mobileNumber: user.mobileNumber
   });
 };
 
@@ -32,8 +33,9 @@ export const updateUser = async (user) => {
     password: user.password,
     userRemark: user.userRemark,
     divisionId: user.divisionId,
+    locationId: user.locationId,
     userTypeId: user.userTypeId,
-    vendorId: user.vendorId ?? null
+    mobileNumber: user.mobileNumber
   });
 };
 

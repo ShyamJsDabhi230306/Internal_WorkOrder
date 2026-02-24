@@ -7,11 +7,17 @@ public partial class Company
 {
     public int CompanyId { get; set; }
 
-    public string CompanyName { get; set; } = null!;
+    public string CompanyName { get; set; }
+    public string CompanyCity { get; set; }
+    public string CompanyCode { get; set; }
 
-    public string CompanyCity { get; set; } = null!;
+    public bool IsActive { get; set; } = true;
+    public bool IsDeleted { get; set; } = false;
 
-    public string CompanyCode { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
-    public virtual ICollection<Division> Divisions { get; set; } = new List<Division>();
+    public virtual ICollection<Location> Locations { get; set; }
+    = new List<Location>();
 }
+

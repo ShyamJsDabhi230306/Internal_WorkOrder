@@ -1,35 +1,20 @@
-// import axios from "axios";
-// import { API_URL } from "../config/constant";
 import axiosClient from "./axiosClient";
 
-// const API = "https://localhost:7132/api/";
-// const API = `${API_URL}/Division`
-
-// GET ALL
 export const getDivisions = async () => {
-  const res = await axiosClient.get(`/Division`);
+  const res = await axiosClient.get("/division");
   return res.data;
 };
 
-// CREATE
-export const createDivision = async (division) => {
-  return await axiosClient.post(`/Division`, {
-    divisionId: 0,
-    companyId: division.companyId,
-    divisionName: division.divisionName
-  });
+export const createDivision = async (dto) => {
+  const res = await axiosClient.post("/division", dto);
+  return res.data;
 };
 
-// UPDATE
-// export const updateDivision = async (division) => {
-//   return await axios.put(`${API}/${division.divisionId}`, division);
-// };
-export const updateDivision = async (id, data) => {
-  return axiosClient.put(`/Division/${id}`, data);
+export const updateDivision = async (id, dto) => {
+  const res = await axiosClient.put(`/division/${id}`, dto);
+  return res.data;
 };
 
-
-// DELETE
 export const deleteDivision = async (id) => {
-  return await axiosClient.delete(`Division/${id}`);
+  return axiosClient.delete(`/division/${id}`);
 };

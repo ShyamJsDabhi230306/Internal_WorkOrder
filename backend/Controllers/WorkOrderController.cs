@@ -29,13 +29,20 @@ namespace WorkOderManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] WorkOrderDto dto)
         {
-            var created = await _repo.CreateAsync(dto);
-
-            return Ok(new
+            try
             {
-                workOrderId = created.WorkOrderId,
-                workOrderNo = created.WorkOrderNo
-            });
+                var created = await _repo.CreateAsync(dto);
+
+                return Ok(new
+                {
+                    workOrderId = created.WorkOrderId,
+                    workOrderNo = created.WorkOrderNo
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPut("update/{id}")]

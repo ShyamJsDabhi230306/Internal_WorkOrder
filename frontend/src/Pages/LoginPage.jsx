@@ -1,121 +1,5 @@
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../API/AuthContext";
-// // import { toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import axiosClient from "../API/axiosClient";
-
-// const API = `/Auth/login`;
-// const imgLogoUrl = new URL('../assets/images/aira.png', import.meta.url).href
-// const ImgsidebarUrl = new URL('../assets/images/SUZIK .jpg', import.meta.url).href
-
-// export default function LoginPage() {
-//   const navigate = useNavigate();
-//   const { login } = useAuth();
-
-//   const [username, setUsername] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [msg, setMsg] = useState("");
-//   const [msgColor, setMsgColor] = useState("text-danger");
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setMsg("");
-
-//     try {
-//       const { data } = await axiosClient.post(API, {
-//         UserName: username,
-//         Password: password,
-//       });
 
 
-
-//       // Save token
-//       localStorage.setItem("token", data.token);
-
-//       // Extract user details
-//       const userObj = {
-//         userId: data.user.userId,
-//         userName: data.user.userName,
-//         fullName: data.user.userFullName,
-//         userTypeId: data.user.userTypeId,
-//         divisionId: data.user.divisionId,
-//         vendorId: data.user.vendorId,
-//       };
-
-//       login(userObj);
-//       localStorage.setItem("user", JSON.stringify(userObj));
-
-//       // Redirect based on role
-//       if (userObj.userTypeId === 1) navigate("/company", { replace: true });
-//       else if (userObj.userTypeId === 2) navigate("/workorder", { replace: true });
-//       else if (userObj.userTypeId === 3) navigate("/workordermanage", { replace: true });
-//       else navigate("/company");
-
-//     } catch (err) {
-//       setMsgColor("text-danger");
-//       setMsg("Invalid username or password.");
-//       toast.error("Invalid username or password");
-//     }
-//   };
-
-//   return (
-//     <div className="container-fluid vh-100">
-//       <div className="row h-100">
-
-//         <div
-//           className="col-md-3 d-none d-md-block p-0"
-//           style={{
-//             // backgroundImage: `url(${ImgsidebarUrl})`,
-//             backgroundSize: "cover",
-//             backgroundPosition: "center",
-//           }}
-//         />
-
-//         <div className="col-12 col-md-6 d-flex align-items-center justify-content-center bg-white">
-//           <div className="p-4 w-75">
-//             <div className="text-center mb-4">
-//               <img src={imgLogoUrl} alt="Logo" style={{ width: "110px" }} />
-//             </div>
-
-//             <h2 className="text-center mb-3">Welcome Back</h2>
-
-//             <form onSubmit={handleSubmit} autoComplete="off">
-//               <div className="mb-3">
-//                 <label>Username</label>
-//                 <input
-//                   className="form-control"
-//                   value={username}
-//                   onChange={(e) => setUsername(e.target.value)}
-//                   autoComplete="new-username"
-//                   required
-//                 />
-//               </div>
-
-//               <div className="mb-3">
-//                 <label>Password</label>
-//                 <input
-//                   type="password"
-//                   className="form-control"
-//                   value={password}
-//                   onChange={(e) => setPassword(e.target.value)}
-//                   autoComplete="new-password"
-//                   required
-//                 />
-//               </div>
-
-//               {msg && <p className={`${msgColor}`}>{msg}</p>}
-
-//               <button className="btn btn-primary w-100">Login</button>
-//             </form>
-
-//           </div>
-//         </div>
-
-//       </div>
-//     </div>
-//   );
-// }
 
 
 
@@ -124,58 +8,20 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../API/AuthContext";
 import axiosClient from "../API/axiosClient";
 import { toast } from "react-toastify";
-const ImgsidebarUrl = new URL('/src/assets/images/04.png', import.meta.url).href
+import "../assets/css/LoginPage.css";
+
+import logoUrl from "../assets/images/aira.png";
+
 const API = "/Auth/login";
-// ✅ YOUR IMAGE METHOD (WORKING)
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  // const { login } = useAuth();
   const { login } = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
-  const [showError, setShowError] = useState(false);
 
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-  //     setMsg("");
-  //  // ✅ SUCCESS TOAST
-  //  try {
-  //    const { data } = await axiosClient.post(API, {
-  //      UserName: username,
-  //      Password: password,
-  //     });
-  //     toast.success("Login successful!");
-
-  //       // Save token
-  //       localStorage.setItem("token", data.token);
-
-  //       const userObj = {
-  //         userId: data.user.userId, 
-  //         userName: data.user.userName,
-  //         fullName: data.user.userFullName,
-  //         userTypeId: data.user.userTypeId,
-  //         divisionId: data.user.divisionId,
-  //         vendorId: data.user.vendorId,
-  //       };
-
-  //       login(userObj);
-  //       localStorage.setItem("user", JSON.stringify(userObj));
-
-  //       // Redirect
-  //       if (userObj.userTypeId === 1) navigate("/company");
-  //       else if (userObj.userTypeId === 2) navigate("/workorder");
-  //       else if (userObj.userTypeId === 3)
-  //         navigate("/workordermanage", { replace: true });
-
-  //     } catch (err) {
-  //     setMsg("Invalid username or password");
-  //       // ✅ ERROR TOAST
-  //     toast.error("Invalid username or password");
-  //     }
-  //   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg("");
@@ -186,140 +32,132 @@ export default function LoginPage() {
         Password: password,
       });
 
-      // ✅ SUCCESS TOAST ONLY AFTER API SUCCESS
       toast.success("Login successful!");
-
       localStorage.setItem("token", data.token);
 
-      const userObj = {
+      const authObj = {
         userId: data.user.userId || data.user.UserId,
         userName: data.user.userName || data.user.UserName,
         fullName: data.user.userFullName || data.user.UserFullName,
         userTypeId: data.user.userTypeId || data.user.UserTypeId,
+        locationId: data.user.locationId || data.user.LocationId,
+        locationName: data.user.locationName || data.user.LocationName,
         divisionId: data.user.divisionId || data.user.DivisionId,
-        vendorId: data.user.vendorId || data.user.VendorId,
+        divisionName: data.user.divisionName || data.user.DivisionName,
+        permissions: data.user.permissions || data.user.Permissions || [],
       };
 
-      login(userObj);
-      localStorage.setItem("user", JSON.stringify(userObj));
+      login(authObj);
 
-      if (userObj.userTypeId === 1) navigate("/company");
-      else if (userObj.userTypeId === 2) navigate("/workorder");
-      else if (userObj.userTypeId === 3)
-        navigate("/workordermanage/accept", { replace: true });
+      if (authObj.userTypeId === 1) {
+        navigate("/company");
+        return;
+      }
+
+      const allowedMenus = authObj.permissions.filter((p) => p.canView || p.CanView);
+
+      // 🗺️ Robust Route Mapping (Using Keys is better than IDs)
+      const routeMap = {
+        "company": "/company",
+        "division": "/division",
+        "vendor": "/vendor",
+        "category": "/category",
+        "product": "/product",
+        "user": "/user",
+        "usertype": "/usertype",
+        "workorder": "/workorder",
+        "workordermanage": "/workordermanage",
+        "reports": "/reports",
+        "location": "/location",
+        "user-menu-rights": "/user-menu-rights"
+      };
+
+      if (allowedMenus.length > 0) {
+        // Find first allowed route
+        let redirectRoute = null;
+        for (const p of allowedMenus) {
+          const key = (p.menuKey || p.MenuKey || p.menu?.menuKey)?.toLowerCase();
+          if (key && routeMap[key]) {
+            redirectRoute = routeMap[key];
+            break;
+          }
+        }
+
+        if (redirectRoute) {
+          navigate(redirectRoute);
+        } else {
+          // Fallback to ID map if keys fail
+          const idMap = {
+            1: "/company", 2: "/division", 3: "/vendor", 4: "/category",
+            5: "/product", 6: "/user", 7: "/usertype", 8: "/workorder",
+            9: "/workordermanage", 10: "/reports", 11: "/location"
+          };
+          const firstId = allowedMenus[0].menuId || allowedMenus[0].MenuId;
+          const fallbackRoute = idMap[firstId];
+
+          if (fallbackRoute) {
+            navigate(fallbackRoute);
+          } else {
+            toast.error("No route mapping found for your permissions.");
+          }
+        }
+      } else {
+        toast.error("No permission assigned to this user.");
+      }
 
     } catch (err) {
       setMsg("Invalid username or password");
-
-      // ✅ ERROR TOAST
       toast.error("Invalid username or password");
     }
   };
 
   return (
-    <div className="sign-in-bg">
-      <div className="app-wrapper d-block">
-        <div className="main-container">
-          <div className="container">
-            <div className="row sign-in-content-bg">
+    <div className="login-container">
+      <div className="login-card">
+        <div className="login-logo">
+          <img src={logoUrl} alt="Aira Logo" />
+        </div>
 
-              {/* LEFT IMAGE */}
-              {/* <div className="col-lg-6 image-contentbox d-none d-lg-block">
-                <div className="form-container">
-                  <div className="signup-bg-img">
-                    <img
-                      src="ImgsidebarUrl"
-                      alt="login"
-                      className="img-fluid"
-                    />
+        <div className="login-header">
+          <h2>Welcome Back</h2>
+          <p>Login to your Work Order Management account</p>
+        </div>
 
-                    
-                  </div>
-                </div>
-              </div> */}
+        <form className="login-form" onSubmit={handleSubmit}>
+          {msg && <div className="text-danger">{msg}</div>}
 
-              {/* LEFT IMAGE */}
-              <div className="col-lg-6 image-contentbox d-none d-lg-block">
-                <div className="form-container">
-                  <div className="signup-bg-img">
-                    <img
-                      src={ImgsidebarUrl}
-                      alt="login"
-                      className="img-fluid"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* LOGIN FORM */}
-              <div className="col-lg-6 form-contentbox">
-                <div className="form-container">
-                  <form className="app-form" onSubmit={handleSubmit}>
-                    <div className="row">
-
-                      <div className="col-12 mb-5">
-                        <h2 className="text-primary f-w-600">
-                          <span className="text-warning">Welcome </span> <span className="small">Aira Euro Automation Pvt Ltd</span>
-                        </h2>
-                        <p>
-                          Sign in with your data that you entered during your registration
-                        </p>
-                      </div>
-
-                      <div className="col-12 mb-3">
-                        <label htmlFor="username" className="form-label">
-                          Username
-                        </label>
-                        <input
-                          id="username"
-                          className="form-control"
-                          placeholder="Enter Your Username"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)}
-                          autoComplete="off"
-                          required
-
-                        />
-                      </div>
-
-                      <div className="col-12 mb-3">
-                        <label htmlFor="password" className="form-label">
-                          Password
-                        </label>
-                        <input
-                          id="password"
-                          type="password"
-                          className="form-control"
-                          placeholder="Enter Your Password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          autoComplete="off"
-                          required
-                        />
-                      </div>
-
-                      {msg && (
-                        <div className="col-12 text-danger mb-2">
-                          {msg}
-                        </div>
-                      )}
-
-                      <div className="col-12 mb-3">
-                        <button
-                          type="submit"
-                          className="btn btn-primary w-100"
-                        >
-                          Sign In
-                        </button>
-                      </div>
-
-                    </div>
-                  </form>
-                </div>
-              </div>
-
-            </div>
+          <div className="form-group">
+            <label className="form-label">Username</label>
+            <input
+              type="text"
+              className="form-control text-white"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
+
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              className="form-control text-white"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className="login-btn">
+            Sign In
+          </button>
+        </form>
+
+        <div className="login-footer">
+          <p>&copy; {new Date().getFullYear()} Aira Euro Automation Pvt Ltd.</p>
+          <p>All Rights Reserved.</p>
         </div>
       </div>
     </div>

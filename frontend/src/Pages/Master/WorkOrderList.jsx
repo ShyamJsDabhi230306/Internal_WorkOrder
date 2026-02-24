@@ -21,6 +21,9 @@ export default function WorkOrderList() {
     if (status === "Pending Dispatch") return "#FFC107";
     return "gray";
   };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     loadData();
   }, []);
@@ -30,38 +33,26 @@ export default function WorkOrderList() {
   }, [search, workOrders]);
 
   const loadData = async () => {
-    const data = await getWorkOrders();
-
-    const sorted = (data || []).sort(
-      (a, b) => b.workOrderId - a.workOrderId
-    );
-
-    setWorkOrders(sorted);
-    setFilteredList(sorted);
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getWorkOrders();
+      const sorted = (data || []).sort((a, b) => b.workOrderId - a.workOrderId);
+      setWorkOrders(sorted);
+      setFilteredList(sorted);
+    } catch (err) {
+      console.error("Load Data Error:", err);
+      setError("Failed to load work orders. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // const formatDate = (v) => (v ? v.slice(0, 10) : "");
+  const getProductKey = (workOrderId, productId, woProductId) =>
+    `${workOrderId}_${productId}_${woProductId}`;
 
-  const formatDate = (v) => {
-  if (!v) return "";
-
-  // works for "2026-01-07", ISO string, Date object
-  const d = new Date(v);
-  if (isNaN(d)) return v?.slice?.(0, 10) || "";
-
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-
-  return `${dd}-${mm}-${yyyy}`;
-};
-
-
-  const getProductKey = (workOrderId, productId) =>
-    `${workOrderId}_${productId}`;
-
-  const handleReceiveQtyChange = (workOrderId, productId, value) => {
-    const key = getProductKey(workOrderId, productId);
+  const handleReceiveQtyChange = (workOrderId, productId, woProductId, value) => {
+    const key = getProductKey(workOrderId, productId, woProductId);
     setReceiveQty((prev) => ({
       ...prev,
       [key]: value,
@@ -71,33 +62,72 @@ export default function WorkOrderList() {
   const handleReceiveProduct = async (
     workOrderId,
     productId,
-    dispatchedQty,   // 👉 this should be TOTAL dispatched
-    receivedQty      // 👉 TOTAL received so far
+    dispatchedTotal,
+    receivedTotal,
+    woProductId
   ) => {
-    const key = getProductKey(workOrderId, productId);
+    const key = getProductKey(workOrderId, productId, woProductId);
     const qty = Number(receiveQty[key] || 0);
 
-    const maxReceivable = dispatchedQty - receivedQty;
+    const maxReceivable = dispatchedTotal - receivedTotal;
 
-    if (qty <= 0 || qty > maxReceivable) {
-      alert(`Invalid quantity. Max receivable now: ${maxReceivable}`);
-      return;
+    if (!qty || qty <= 0) {
+      return alert("Please enter a valid quantity greater than 0.");
     }
 
-    await receiveProduct(workOrderId, productId, { qty });
+    if (qty > maxReceivable) {
+      return alert(`Cannot receive more than available. Max allowed: ${maxReceivable}`);
+    }
 
-    setReceiveQty((prev) => ({
-      ...prev,
-      [key]: "",
-    }));
+    try {
+      setLoading(true);
+      await receiveProduct(workOrderId, productId, { qty, workOrderProductId: woProductId });
 
-    loadData();
+      setReceiveQty((prev) => ({
+        ...prev,
+        [key]: "",
+      }));
+
+      await loadData();
+      alert("Product received successfully!");
+    } catch (err) {
+      console.error("Receive Product Error:", err);
+      alert(err.response?.data?.message || "Failed to receive product. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkComplete = async (woId) => {
+    if (!window.confirm("Are you sure you want to mark this work order as completed?")) return;
+
+    try {
+      setLoading(true);
+      await receiveWorkOrder(woId);
+      await loadData();
+      alert("Work order marked as completed!");
+    } catch (err) {
+      console.error("Complete WO Error:", err);
+      alert("Failed to complete work order.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isFullyReceived = (wo) =>
     wo.products.every(
       (p) => Number(p.receivedQuantity || 0) >= Number(p.quantity || 0)
     );
+
+  const formatDate = (v) => {
+    if (!v) return "";
+    const d = new Date(v);
+    if (isNaN(d)) return v?.slice?.(0, 10) || "";
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = d.getFullYear();
+    return `${dd}-${mm}-${yyyy}`;
+  };
 
   const applySearch = () => {
     if (!search.trim()) {
@@ -153,7 +183,7 @@ export default function WorkOrderList() {
 
   return (
     <div className="card shadow-sm">
-      <div className="card-header bg-white py-3">
+      <div className="card-header py-3">
         {/* <div className="d-flex justify-content-between align-items-center">
           <h4 className="fw-bold">Work Order List</h4>
 
@@ -181,11 +211,13 @@ export default function WorkOrderList() {
         <div className="table-scroll mt-3">
 
           <table className="table table-bordered  align-middle fixed-header table-single-line">
-            <thead className="table-light">
+            <thead>
               <tr>
                 <th>#</th>
                 <th>WO No</th>
-                <th>Vendor</th>
+                {/* <th>Person</th> */}
+                <th>Location</th>
+                <th>Division</th>
                 <th>Status</th>
                 <th>Delivery Status</th>
 
@@ -216,8 +248,9 @@ export default function WorkOrderList() {
                     <tr key={w.workOrderId}>
                       <td>{index + 1}</td>
                       <td>{w.workOrderNo}</td>
-                      <td>{w.vendorName}</td>
-
+                      {/* <td>{w.vendorName}</td> */}
+                      <td>{w.toLocationName}</td>
+                      <td>{w.toDivisionName}</td>
                       <td>
                         <span className="badge bg-info">{w.status}</span>
                       </td>
@@ -269,8 +302,8 @@ export default function WorkOrderList() {
 
                         <button
                           className="btn btn-primary btn-sm"
-                          onClick={() => receiveWorkOrder(w.workOrderId)}
-                          disabled={w.status === "Completed" || !fullyReceived}
+                          onClick={() => handleMarkComplete(w.workOrderId)}
+                          disabled={w.status === "Completed" || !fullyReceived || loading}
                         >
                           {w.status === "Completed"
                             ? "Completed"
@@ -284,11 +317,11 @@ export default function WorkOrderList() {
 
                     {expandedRow === w.workOrderId && (
                       <tr>
-                        <td colSpan="16" className="bg-light">
+                        <td colSpan="16">
                           <h6 className="fw-bold mb-2">Product Breakdown</h6>
 
                           <table className="table table-sm table-bordered">
-                            <thead className="table-secondary">
+                            <thead>
                               <tr>
                                 <th>Category</th>
                                 <th>Product</th>
@@ -314,14 +347,14 @@ export default function WorkOrderList() {
                                 // receive allowed (total dispatched - total received)
                                 const maxReceivable = dispatchedTotal - received;
 
-                                const key = getProductKey(w.workOrderId, p.productId);
+                                const key = getProductKey(w.workOrderId, p.productId, p.workOrderProductId);
                                 const currentInput = receiveQty[key] || "";
 
                                 const canReceive =
                                   maxReceivable > 0 && received < total;
 
                                 return (
-                                  <tr key={i}>
+                                  <tr key={p.workOrderProductId}>
                                     <td>{p.category}</td>
                                     <td>{p.product}</td>
                                     <td>{total}</td>
@@ -340,7 +373,7 @@ export default function WorkOrderList() {
                                         <div className="d-flex gap-2 align-items-center">
                                           <input
                                             type="number"
-                                            className="form-control form-control-sm"
+                                            className="form-control form-control-sm no-spin"
                                             style={{ maxWidth: "90px" }}
                                             placeholder="Qty"
                                             value={currentInput}
@@ -348,6 +381,7 @@ export default function WorkOrderList() {
                                               handleReceiveQtyChange(
                                                 w.workOrderId,
                                                 p.productId,
+                                                p.workOrderProductId,
                                                 e.target.value
                                               )
                                             }
@@ -359,8 +393,9 @@ export default function WorkOrderList() {
                                               handleReceiveProduct(
                                                 w.workOrderId,
                                                 p.productId,
-                                                dispatchedTotal, // TOTAL dispatched for logic
-                                                received
+                                                dispatchedTotal,
+                                                received,
+                                                p.workOrderProductId
                                               )
                                             }
                                           >

@@ -1,66 +1,3 @@
-// import { useAuth } from "../API/AuthContext";
-
-// export default function Topbar() {
-//   const { auth, logout } = useAuth();
-
-//   return (
-//     <div
-//       className="d-flex justify-content-end align-items-center px-4 py-2 shadow-sm bg-white"
-//       style={{ height: "60px" }}
-//     >
-//       <span className="me-3 text-muted">
-//         Logged in as <strong>{auth?.userName}</strong>
-//       </span>
-//       <button className="btn btn-sm btn-outline-danger" onClick={logout}>
-//         Logout
-//       </button>
-//     </div>
-//   );
-// }
-
-
-// import { useAuth } from "../API/AuthContext";
-// import '../assets/css/Topbar.css';
-
-// export default function Topbar() {
-//   const { auth, logout } = useAuth();
-
-//   return (
-//     <header className="header-main shadow-sm">
-//       <div className="container-fluid h-100 d-flex align-items-center justify-content-between px-4">
-
-//         {/* LEFT (PAGE TITLE / LOGO PLACEHOLDER) */}
-//         <div className="d-flex align-items-center gap-2">
-//           <i className="bi bi-grid text-primary fs-5"></i>
-//           <span className="fw-semibold text-dark">Dashboard</span>
-//         </div>
-
-//         {/* RIGHT (USER INFO) */}
-//         <div className="d-flex align-items-center gap-3">
-//           <div className="d-flex align-items-center gap-2">
-//             <div className="avatar-circle">
-//               {auth?.userName?.charAt(0)?.toUpperCase()}
-//             </div>
-//             <span className="text-muted">
-//               {auth?.userName}
-//             </span>
-//           </div>
-
-//           <button
-//             className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
-//             onClick={logout}
-//           >
-//             <i className="bi bi-box-arrow-right"></i>
-//             Logout
-//           </button>
-//         </div>
-
-//       </div>
-//     </header>
-//   );
-// }
-
-
 import { useAuth } from "../API/AuthContext";
 import "../assets/css/Topbar.css";
 
@@ -68,39 +5,50 @@ export default function Topbar({ toggleSidebar }) {
   const { auth, logout } = useAuth();
 
   return (
-    <header className="header-main shadow-sm">
+    <header className="header-main">
       <div className="container-fluid h-100 d-flex align-items-center justify-content-between px-4">
 
         {/* LEFT */}
         <div className="d-flex align-items-center gap-3">
           <button
-            className="btn btn-sm btn-outline-secondary"
+            className="btn btn-sm btn-outline-light border-0 fs-4 p-0"
             onClick={toggleSidebar}
+            title="Toggle Sidebar"
           >
-            <i className="bi bi-list"></i>
+            <i className="bi bi-list text-white"></i>
           </button>
 
-          <div className="d-flex align-items-center gap-2">
-            <i className="bi bi-grid text-primary fs-5"></i>
-            <span className="fw-semibold text-dark">Dashboard</span>
+          <div className="d-flex align-items-center gap-2 ms-2">
+            {/* <div className="p-2 bg-primary bg-opacity-10 rounded-3">
+              <i className="bi bi-grid-fill text-primary"></i>
+            </div> */}
+            <span className="fw-bold text-white letter-spacing-1 h5 m-0 d-none d-md-block">Aira Euro Automation Pvt Ltd  <span className="text-primary"></span></span>
           </div>
         </div>
 
         {/* RIGHT */}
-        <div className="d-flex align-items-center gap-3">
-          <div className="d-flex align-items-center gap-2">
-            <div className="avatar-circle">
-              {auth?.userName?.charAt(0)?.toUpperCase()}
+        <div className="d-flex align-items-center gap-4">
+          <div className="d-flex align-items-center gap-3 pe-3 border-end border-white border-opacity-10">
+            <div className="text-end d-none d-sm-block">
+              <div className="text-white fw-bold small mb-0 lh-1">{auth?.fullName || auth?.userName}</div>
+              <small className="text-primary small uppercase fw-bold" style={{ fontSize: '10px' }}>{auth?.userTypeId === 1 ? 'Administrator' : 'System User'}</small>
             </div>
-            <span className="text-muted">{auth?.userName}</span>
+
+            <div className="avatar-wrapper position-relative">
+              <div className="avatar-circle shadow-lg border border-primary border-opacity-50">
+                {auth?.userName?.charAt(0)?.toUpperCase()}
+              </div>
+              <span className="position-absolute bottom-0 end-0 p-1 bg-success border border-dark rounded-circle" style={{ width: '10px', height: '10px' }}></span>
+            </div>
           </div>
 
           <button
-            className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
+            className="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 py-1 px-3"
             onClick={logout}
+            style={{ borderRadius: '20px' }}
           >
             <i className="bi bi-box-arrow-right"></i>
-            Logout
+            <span className="d-none d-md-block fw-bold small">Logout</span>
           </button>
         </div>
 

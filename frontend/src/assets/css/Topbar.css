@@ -1,18 +1,36 @@
 .header-main {
-  height: 60px;
-  background: #ffffff;
-  border-bottom: 1px solid #e9ecef;
-  margin-bottom: 60px!important;
+  height: 64px;
+  background: var(--glass-bg-s1);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
+
+.letter-spacing-1 {
+  letter-spacing: 0.05rem;
 }
 
 .avatar-circle {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, rgba(var(--primary), 0.2), rgba(var(--primary), 0.05));
   border-radius: 50%;
-  background: rgba(72, 190, 206, 0.15);
-  color: #48bece;
-  font-weight: 600;
+  border: 1px solid rgba(var(--primary), 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--white);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: var(--app-transition);
+}
+
+.avatar-wrapper:hover .avatar-circle {
+  box-shadow: 0 0 15px rgba(var(--primary), 0.4);
+  transform: translateY(-2px);
+  border-color: rgba(var(--primary), 0.6);
 }

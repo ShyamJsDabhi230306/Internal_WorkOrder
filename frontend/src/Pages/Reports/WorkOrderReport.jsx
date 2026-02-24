@@ -8,6 +8,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import POFileActions from "../../Components/POFileActions";
+import { Row } from "react-bootstrap";
 
 export default function WorkOrderReport() {
   const [workOrders, setWorkOrders] = useState([]);
@@ -43,7 +44,7 @@ export default function WorkOrderReport() {
           // ================= WORK ORDER =================
           workOrderId: wo.workOrderId,
           workOrderNo: wo.workOrderNo,
-          vendorName: wo.vendorName,
+          acceptedDivisionName: wo.acceptedDivisionName ?? "", 
 
           divisionName: wo.divisionName,   // ✅ ADD THIS
           status: wo.status,
@@ -287,7 +288,8 @@ export default function WorkOrderReport() {
   const exportExcel = () => {
     const excelData = filtered.map((row) => ({
       "WO No": row.workOrderNo,
-      Vendor: row.vendorName,
+      // Vendor: row.vendorName,
+      acceptedDivisionName: row.acceptedDivisionName ?? null,
       Status: row.status,
       "WO Date": formatDate(row.workOrderDate),
       "Delivery Date": formatDate(row.deliveryDate),
@@ -328,7 +330,7 @@ export default function WorkOrderReport() {
     const formatDate = (v) => (v ? v.slice(0, 10) : "");
     const tableRows = filtered.map((r) => [
       r.workOrderNo,
-      r.vendorName,
+      r.acceptedDivisionName,
       r.status,
       formatDate(r.workOrderDate),
       r.product,
@@ -615,12 +617,12 @@ export default function WorkOrderReport() {
                     <th>WO No</th>
 
                     {/* 🔁 Conditional column */}
-                    {userTypeId === 2 && <th>Vendor</th>}
-                    {userTypeId === 3 && <th>Division</th>}
+                    {userTypeId === 2 && <th>Division</th>}
+                    {userTypeId === 3 && <th>HO</th>}
                     {userTypeId === 1 && (
                       <>
-                        <th>Vendor</th>
                         <th>Division</th>
+                        <th>HO</th>
                       </>
                     )}
 
@@ -649,11 +651,11 @@ export default function WorkOrderReport() {
                         <td>{row.workOrderNo}</td>
 
                         {/* 🔁 Conditional column */}
-                        {userTypeId === 2 && <td>{row.vendorName}</td>}
+                        {userTypeId === 2 && <td>{row.divisionName}</td>}
                         {userTypeId === 3 && <td>{row.divisionName}</td>}
                         {userTypeId === 1 && (
                           <>
-                            <td>{row.vendorName}</td>
+                            <td>{row.acceptedDivisionName}</td>
                             <td>{row.divisionName}</td>
                           </>
                         )}

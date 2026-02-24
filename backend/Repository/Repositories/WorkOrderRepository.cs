@@ -200,10 +200,15 @@ namespace WorkOderManagementSystem.Repository.Repositories
 
 
 
+                if (dto.Products == null || !dto.Products.Any())
+                {
+                    throw new Exception("Work order must have at least one product.");
+                }
+
                 var entity = new WorkOrder
                 {
                     WorkOrderNo = await GenerateWorkOrderNo(dto.DivisionId),
-                    VendorId = dto.VendorId == 0 ? null : dto.VendorId, 
+                    VendorId = (dto.VendorId == null || dto.VendorId == 0) ? null : dto.VendorId, 
                     OrderTypeId = dto.OrderTypeId,
                     WoPriorityId = dto.WoPriorityId,
                     WorkOrderDate = dto.WorkOrderDate,
@@ -214,9 +219,7 @@ namespace WorkOderManagementSystem.Repository.Repositories
                     Pono = dto.OrderTypeId == 1 ? dto.Pono : null,
                     Podate = dto.OrderTypeId == 1 ? dto.Podate : null,
                     AuthorizedPerson = dto.OrderTypeId == 1 ? dto.AuthorizedPerson : null,
-                    // ✅ NEW (SAFE)
                     POAttachmentPath = poAttachmentPath,
-
                     Status = "Pending",
                 };
 
@@ -226,6 +229,16 @@ namespace WorkOderManagementSystem.Repository.Repositories
 
                 foreach (var p in dto.Products)
                 {
+                    if (p.ProductId == 0 || p.CategoryId == 0)
+                    {
+                        throw new Exception("Product or Category not selected correctly for one or more items.");
+                    }
+
+                    if (p.Quantity <= 0)
+                    {
+                        throw new Exception($"Quantity must be greater than zero for Product ID {p.ProductId}.");
+                    }
+
                     entity.WorkOrderProducts.Add(new WorkOrderProduct
                     {
                         CategoryId = p.CategoryId,
@@ -245,12 +258,16 @@ namespace WorkOderManagementSystem.Repository.Repositories
             catch (Exception ex)
             {
                 // Shows inner database errors also
-                var message =
-                    ex.InnerException?.Message ??
-                    ex.Message ??
-                    "Unknown error occurred while creating work order";
+                var innerMessage = ex.InnerException?.Message;
+                var message = ex.Message;
 
-                throw new Exception("WorkOrder Create Error: " + message);
+                string fullError = message;
+                if (!string.IsNullOrEmpty(innerMessage))
+                {
+                    fullError += " (Inner Error: " + innerMessage + ")";
+                }
+
+                throw new Exception("WorkOrder Create Error: " + fullError);
             }
         }
 

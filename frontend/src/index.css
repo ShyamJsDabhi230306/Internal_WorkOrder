@@ -1,0 +1,31 @@
+/* Global Visibility Fixes */
+label {
+    color: #ffffff !important;
+    opacity: 0.9 !important;
+    font-weight: 500 !important;
+}
+
+::placeholder {
+    color: rgba(255, 255, 255, 0.45) !important;
+    font-style: italic;
+}
+
+/* Ensure inputs are always readable */
+.form-control,
+.form-select {
+    color: #ffffff !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    color: #ffffff !important;
+}
+
+/* High contrast for Sidebar titles */
+.sidebar-section-title {
+    color: #48bece !important;
+    /* Brighter teal for titles */
+    opacity: 1 !important;
+    letter-spacing: 1px;
+}

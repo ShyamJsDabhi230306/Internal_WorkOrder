@@ -8,12 +8,14 @@
   width: 100% !important;
   min-height: 100vh !important;
   overflow: hidden;
+  background: radial-gradient(circle at top left, #66959e, #1c1d1d);
 }
 
 /* ===============================
    FORCE SIDEBAR WIDTH
 ================================ */
 /* .app-wrapper > nav,
+.app-wrapper > aside,
 .app-wrapper > nav.dark-sidebar {
   width: 260px !important;
   min-width: 260px !important;
@@ -33,15 +35,18 @@
    SIDEBAR (NORMAL STATE)
 ================================ */
 
-.app-wrapper > nav,
-.app-wrapper > nav.dark-sidebar {
+.app-wrapper>nav,
+.app-wrapper>aside,
+.app-wrapper>nav.dark-sidebar {
   width: 260px;
   min-width: 260px;
   max-width: 260px;
   position: relative;
 
-  background: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-right: 1px solid var(--glass-border);
 
   /* 👇 smooth animation */
   transition:
@@ -57,16 +62,18 @@
 /* ===============================
    FORCE CONTENT AREA (FIXED)
 ================================ */
-.app-wrapper > .app-content {
-  flex: 1 1 auto !important;     /* ✅ let flex calculate width */
-  width: auto !important;        /* ❌ NO calc() */
+.app-wrapper>.app-content {
+  flex: 1 1 auto !important;
+  /* ✅ let flex calculate width */
+  width: auto !important;
+  /* ❌ NO calc() */
   max-width: 100% !important;
   margin-left: 0 !important;
   padding-left: 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  background: #f5f7fb;
- transition: all 0.35s ease;
+  background: transparent !important;
+  transition: all 0.35s ease;
 }
 
 /* ===============================
@@ -98,9 +105,11 @@
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
-.page-content{
-    margin-top: 20px!important;
+
+.page-content {
+  margin-top: 20px !important;
 }
+
 /* =========================================================
    PAGE HEADER SPACING WHEN SIDEBAR IS COLLAPSED
 ========================================================= */
@@ -128,9 +137,11 @@ header,
   height: 60px;
   display: flex;
   align-items: center;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
- 
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+
 }
 
 /* ===============================
@@ -144,18 +155,19 @@ nav a {
   padding: 10px 14px !important;
   margin: 4px 10px !important;
   border-radius: 10px;
-  color: #334155 !important;
+  color: var(--font-light-color) !important;
   font-size: 14px;
   transition: all 0.2s ease;
 }
 
 nav a:hover {
-  background: #f1f5f9;
+  background: rgba(var(--primary), 0.1);
+  color: #ffffff !important;
 }
 
 nav a.active {
-  background: rgba(72, 190, 206, 0.18) !important;
-  color: rgb(72, 190, 206) !important;
+  background: linear-gradient(135deg, rgba(var(--primary), 0.2), rgba(var(--primary), 0.05)) !important;
+  color: #48bece !important;
   font-weight: 600;
 }
 
@@ -175,12 +187,15 @@ nav a.active {
 
 
 @media (max-width: 992px) {
-  .app-wrapper:not(.sidebar-open) > nav {
+
+  .app-wrapper:not(.sidebar-open)>nav,
+  .app-wrapper:not(.sidebar-open)>aside {
     width: 0 !important;
     min-width: 0 !important;
   }
 
-  .app-wrapper.sidebar-open > nav {
+  .app-wrapper.sidebar-open>nav,
+  .app-wrapper.sidebar-open>aside {
     width: 260px !important;
     min-width: 260px !important;
   }
@@ -220,8 +235,9 @@ nav a.active {
   border-right: none;
 } */
 
-.sidebar-collapsed > nav,
-.sidebar-collapsed > nav.dark-sidebar {
+.sidebar-collapsed>nav,
+.sidebar-collapsed>aside,
+.sidebar-collapsed>nav.dark-sidebar {
   width: 0 !important;
   min-width: 0 !important;
   max-width: 0 !important;
@@ -231,12 +247,12 @@ nav a.active {
   border-right: none;
 }
 
-.sidebar-collapsed > .app-content {
+.sidebar-collapsed>.app-content {
   width: 100% !important;
 }
 
 /* Content full width when sidebar hidden */
-.sidebar-collapsed > .app-content {
+.sidebar-collapsed>.app-content {
   flex: 1 1 100% !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -247,8 +263,10 @@ nav a.active {
    DESKTOP SAFETY (PREVENT AUTO COLLAPSE)
 ================================ */
 @media (min-width: 993px) {
-  .app-wrapper > nav,
-  .app-wrapper > nav.dark-sidebar {
+
+  .app-wrapper>nav,
+  .app-wrapper>aside,
+  .app-wrapper>nav.dark-sidebar {
     width: 260px !important;
     min-width: 260px !important;
     max-width: 260px !important;
@@ -259,8 +277,173 @@ nav a.active {
 
 
 @media (min-width: 993px) {
-  .app-wrapper > nav {
+
+  .app-wrapper>nav,
+  .app-wrapper>aside {
     width: 260px !important;
     min-width: 260px !important;
   }
 }
+/* ===============================
+   GLASSY CARDS & TABLES GLOBAL
+================================ */
+
+.card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: var(--bs-border-radius) !important;
+  color: var(--font-color) !important;
+  box-shadow: var(--box-shadow) !important;
+  margin-bottom: 24px;
+}
+
+.card-header {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  padding: 1.25rem !important;
+}
+
+.card-body {
+  background: transparent !important;
+  padding: 1.25rem !important;
+}
+
+.card-footer {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-top: 1px solid var(--glass-border) !important;
+}
+
+/* Fix for white inputs in glassy cards */
+.card .form-control,
+.card .form-select {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: #ffffff !important;
+}
+
+.card .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Typography visibility */
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+  color: #ffffff !important;
+} 
+
+/* ===============================
+   PROFESSIONAL UI/UX REFINEMENT OVERRIDES
+================================ */
+
+/* Global Dropdown/Select Styling */
+select.form-control,
+.form-select {
+  background-color: #282a36 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  cursor: pointer;
+}
+
+select.form-control option,
+.form-select option {
+  background-color: #282a36 !important;
+  color: #ffffff !important;
+  padding: 10px;
+}
+
+/* Global Table Refinements */
+.table {
+  color: #ffffff !important;
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.table thead th {
+  background: rgba(72, 190, 206, 0.15) !important;
+  color: #48bece !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  border-bottom: 2px solid rgba(72, 190, 206, 0.3) !important;
+  padding: 15px !important;
+}
+
+.table tbody td {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  padding: 12px 15px !important;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: #ffffff !important;
+  box-shadow: inset 4px 0 0 #48bece;
+}
+
+/* Typography Visibility & Professionalism */
+body {
+  font-family: 'Inter', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .fw-bold {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Button Premium Look */
+.btn {
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 8px 18px !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #48bece, #3a97a3) !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(72, 190, 206, 0.2) !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(72, 190, 206, 0.3) !important;
+}
+
+
+/* Force Input Text Color to White */
+input, textarea, select {
+  color: #ffffff !important;
+}
+
+/* Fix for Topbar text colors */
+.header-main span, .header-main div {
+  color: #ffffff !important;
+}
+
+.text-primary {
+  color: #48bece !important;
+}
+
+.avatar-circle {
+  background: rgba(72, 190, 206, 0.2) !important;
+  color: #48bece !important;
+  border: 1px solid rgba(72, 190, 206, 0.4) !important;
+}
+
+.uppercase { text-transform: uppercase; }
+.letter-spacing-1 { letter-spacing: 1px; }
+.m-0 { margin: 0 !important; }
+
+
+.text-white-50 { color: rgba(255, 255, 255, 0.5) !important; }
+.border-white-10 { border-color: rgba(255, 255, 255, 0.1) !important; }
+.letter-spacing-1 { letter-spacing: 1px; }
+.uppercase { text-transform: uppercase; }
+.custom-checkbox:checked { background-color: #48bece !important; border-color: #48bece !important; }
+.custom-checkbox { background-color: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.2) !important; }
+

@@ -6,10 +6,6 @@ namespace WorkOderManagementSystem.Models;
 
 public partial class WorkOrderManagementSystemContext : DbContext
 {
-    public WorkOrderManagementSystemContext()
-    {
-    }
-
     public WorkOrderManagementSystemContext(DbContextOptions<WorkOrderManagementSystemContext> options)
         : base(options)
     {
@@ -38,13 +34,17 @@ public partial class WorkOrderManagementSystemContext : DbContext
     public virtual DbSet<WorkOrder> WorkOrders { get; set; }
 
     public virtual DbSet<WorkOrderProduct> WorkOrderProducts { get; set; }
-
+    
     public DbSet<Menu> Menus { get; set; }
     public DbSet<UserMenuPermission> UserMenuPermissions { get; set; }
+    public DbSet<Location> Locations { get; set; }
 
-
-
-    // OnConfiguring was removed to ensure the connection string is read from appsettings.json via Dependency Injection.
+    //public DbSet<PageMaster> PageMasters { get; set; }
+    //public DbSet<UserPageRight> UserPageRights { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {  }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+    //=> optionsBuilder.UseSqlServer("Server=103.212.120.184,1433;Database=WorkOrderManagementSystem;User Id=sa;Password=India@143;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;");
+    //=> optionsBuilder.UseSqlServer(default);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -100,6 +100,40 @@ public partial class WorkOrderManagementSystemContext : DbContext
             entity.Property(e => e.CompanyName).HasMaxLength(200);
         });
 
+
+        modelBuilder.Entity<Location>(entity =>
+        {
+            entity.HasKey(e => e.LocationId);
+
+            entity.ToTable("Location");
+
+            entity.Property(e => e.LocationName)
+                  .HasMaxLength(200)
+                  .IsRequired();
+
+            entity.Property(e => e.LocationCode)
+                  .HasMaxLength(50);
+
+            entity.Property(e => e.IsActive)
+                  .HasDefaultValue(true);
+
+            entity.Property(e => e.IsDeleted)
+                  .HasDefaultValue(false);
+
+            entity.Property(e => e.CreatedAt)
+                  .HasColumnType("datetime");
+
+            entity.Property(e => e.UpdatedAt)
+                  .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Company)
+                  .WithMany(p => p.Locations)
+                  .HasForeignKey(d => d.CompanyId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_Location_Company");
+        });
+
+
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D82465AB51");
@@ -118,10 +152,10 @@ public partial class WorkOrderManagementSystemContext : DbContext
             entity.Property(e => e.DivisionCode).HasMaxLength(20);
             entity.Property(e => e.DivisionName).HasMaxLength(200);
 
-            entity.HasOne(d => d.Company).WithMany(p => p.Divisions)
-                .HasForeignKey(d => d.CompanyId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Division_Company");
+            //entity.HasOne(d => d.Company).WithMany(p => p.Divisions)
+            //    .HasForeignKey(d => d.CompanyId)
+            //    .OnDelete(DeleteBehavior.ClientSetNull)
+            //    .HasConstraintName("FK_Division_Company");
         });
 
         modelBuilder.Entity<OrderType>(entity =>
@@ -248,14 +282,25 @@ public partial class WorkOrderManagementSystemContext : DbContext
                 .HasConstraintName("FK_WorkOrder_OrderType");
 
             entity.HasOne(d => d.Vendor).WithMany(p => p.WorkOrders)
-                .HasForeignKey(d => d.VendorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_WorkOrder_Vendors");
+               .HasForeignKey(d => d.VendorId)
+               .OnDelete(DeleteBehavior.ClientSetNull)
+               .HasConstraintName("FK_WorkOrder_Vendors");
+
+            entity.HasOne(w => w.VendorUser)
+                 .WithMany()
+                 .HasForeignKey(w => w.VendorId)
+                 .IsRequired(false)
+                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(d => d.WoPriority).WithMany(p => p.WorkOrders)
                 .HasForeignKey(d => d.WoPriorityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_WorkOrder_WoPriorityType");
+
+            entity.HasOne(d => d.Division).WithMany(p => p.WorkOrders)
+                .HasForeignKey(d => d.DivisionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WorkOrder_Division");
         });
 
         modelBuilder.Entity<WorkOrderProduct>(entity =>
@@ -281,7 +326,7 @@ public partial class WorkOrderManagementSystemContext : DbContext
                 .HasForeignKey(d => d.WorkOrderId)
                 .HasConstraintName("FK_WorkOrderProduct_WorkOrder");
         });
-
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

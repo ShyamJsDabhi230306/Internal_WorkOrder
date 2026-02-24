@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import Layout from "../../layout/Layout";
 import {
-  getDivisions,
-  createDivision,
-  updateDivision,
-  deleteDivision,
-} from "../../API/divisionApi";
-import { getLocations } from "../../API/locationApi";
+  getLocations,
+  createLocation,
+  updateLocation,
+  deleteLocation,
+} from "../../API/locationApi";
+import { getCompanies } from "../../API/companyApi";
 import { toast } from "react-toastify";
 
-export default function DivisionMaster() {
+export default function LocationMaster() {
   const [list, setList] = useState([]);
-  const [locations, setLocations] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(null);
 
   // Form States
-  const [locationId, setLocationId] = useState("");
-  const [divisionName, setDivisionName] = useState("");
-  const [divisionCode, setDivisionCode] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [name, setName] = useState("");
+  const [code, setCode] = useState("");
   const [isActive, setIsActive] = useState(true);
 
   // Edit States
@@ -29,12 +29,12 @@ export default function DivisionMaster() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [divData, locData] = await Promise.all([getDivisions(), getLocations()]);
-      setList(divData || []);
-      setLocations(locData || []);
+      const [data, comp] = await Promise.all([getLocations(), getCompanies()]);
+      setList(data || []);
+      setCompanies(comp || []);
     } catch (error) {
       console.error("Load Error:", error);
-      setLoadError("Failed to load division data.");
+      setLoadError("Failed to load location data.");
       toast.error("Failed to load data");
     } finally {
       setLoading(false);
@@ -46,9 +46,9 @@ export default function DivisionMaster() {
   }, []);
 
   const resetForm = () => {
-    setLocationId("");
-    setDivisionName("");
-    setDivisionCode("");
+    setCompanyId("");
+    setName("");
+    setCode("");
     setIsActive(true);
     setEditId(null);
     setShowModal(false);
@@ -57,26 +57,26 @@ export default function DivisionMaster() {
   // SAVE / UPDATE
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!locationId || !divisionName) {
-      return toast.warning("Please fill all mandatory fields (Location and Division Name).");
+    if (!companyId || !name) {
+      return toast.warning("Please fill all mandatory fields (Company and Location Name).");
     }
 
     const payload = {
-      divisionId: editId || 0,
-      locationId: Number(locationId),
-      divisionName,
-      divisionCode,
-      isActive,
+      locationId: editId || 0,
+      companyId: parseInt(companyId),
+      locationName: name,
+      locationCode: code,
+      isActive: isActive
     };
 
     setLoading(true);
     try {
       if (editId) {
-        await updateDivision(editId, payload);
-        toast.success("Division updated successfully");
+        await updateLocation(editId, payload);
+        toast.success("Location updated successfully");
       } else {
-        await createDivision(payload);
-        toast.success("Division created successfully");
+        await createLocation(payload);
+        toast.success("Location created successfully");
       }
       resetForm();
       await loadData();
@@ -88,30 +88,30 @@ export default function DivisionMaster() {
     }
   };
 
-  // EDIT
-  const startEdit = (d) => {
-    setEditId(d.divisionId);
-    setLocationId(d.locationId);
-    setDivisionName(d.divisionName);
-    setDivisionCode(d.divisionCode || "");
-    setIsActive(d.isActive);
-    setShowModal(true);
-  };
-
   // DELETE
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this division?")) return;
+    if (!window.confirm("Are you sure you want to delete this location?")) return;
     setLoading(true);
     try {
-      await deleteDivision(id);
-      toast.success("Division deleted successfully");
+      await deleteLocation(id);
+      toast.success("Location deleted successfully");
       await loadData();
     } catch (error) {
       console.error("Delete Error:", error);
-      toast.error("Delete failed. This division might be in use.");
+      toast.error("Delete failed. This location might be in use.");
     } finally {
       setLoading(false);
     }
+  };
+
+  // START EDIT
+  const startEdit = (l) => {
+    setEditId(l.locationId);
+    setCompanyId(l.companyId);
+    setName(l.locationName);
+    setCode(l.locationCode || "");
+    setIsActive(l.isActive);
+    setShowModal(true);
   };
 
   return (
@@ -119,15 +119,15 @@ export default function DivisionMaster() {
       <div className="container-fluid px-4 py-3">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
-            <h3 className="mb-0 text-white fw-bold">Division Master</h3>
-            <p className="text-info small mb-0">Manage organizational divisions and departments</p>
+            <h3 className="mb-0 text-white fw-bold">Location Master</h3>
+            <p className="text-info small mb-0">Manage organizational branch locations and HQ</p>
           </div>
           <button
             className="btn btn-primary d-flex align-items-center gap-2 shadow"
             onClick={() => { resetForm(); setShowModal(true); }}
             disabled={loading}
           >
-            <i className="bi bi-plus-circle"></i> Add New Division
+            <i className="bi bi-plus-circle"></i> Add New Location
           </button>
         </div>
 
@@ -142,49 +142,49 @@ export default function DivisionMaster() {
         {showModal && (
           <div className="card bg-dark-glass border-0 mb-4 shadow-lg animate__animated animate__fadeInDown">
             <div className="card-header bg-transparent border-bottom border-secondary d-flex justify-content-between align-items-center py-3">
-              <h5 className="mb-0 text-white fw-bold">{editId ? 'Edit Division' : 'Create New Division'}</h5>
+              <h5 className="mb-0 text-white fw-bold">{editId ? 'Edit Location' : 'Create New Location'}</h5>
               <button className="btn-close btn-close-white" onClick={() => setShowModal(false)}></button>
             </div>
             <div className="card-body p-4">
               <form onSubmit={handleSubmit}>
                 <div className="row g-4">
                   <div className="col-md-4">
-                    <label className="form-label text-info small fw-bold">Location *</label>
+                    <label className="form-label text-info small fw-bold">Company *</label>
                     <select
                       className="form-select bg-dark text-white border-secondary"
-                      value={locationId}
-                      onChange={(e) => setLocationId(e.target.value)}
+                      value={companyId}
+                      onChange={(e) => setCompanyId(e.target.value)}
                       required
                       disabled={loading}
                     >
-                      <option value="">Select Location</option>
-                      {locations.map((l) => (
-                        <option key={l.locationId} value={l.locationId}>
-                          {l.locationName}
+                      <option value="">Select Company</option>
+                      {companies.map((c) => (
+                        <option key={c.companyId} value={c.companyId}>
+                          {c.companyName}
                         </option>
                       ))}
                     </select>
                   </div>
 
                   <div className="col-md-4">
-                    <label className="form-label text-info small fw-bold">Division Name *</label>
+                    <label className="form-label text-info small fw-bold">Location Name *</label>
                     <input
                       className="form-control bg-dark text-white border-secondary"
-                      placeholder="e.g. Quality Control"
-                      value={divisionName}
-                      onChange={(e) => setDivisionName(e.target.value)}
+                      placeholder="e.g. Mumbai HQ"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       required
                       disabled={loading}
                     />
                   </div>
 
                   <div className="col-md-4">
-                    <label className="form-label text-info small fw-bold">Division Code</label>
+                    <label className="form-label text-info small fw-bold">Location Code</label>
                     <input
                       className="form-control bg-dark text-white border-secondary"
-                      placeholder="e.g. QC-01"
-                      value={divisionCode}
-                      onChange={(e) => setDivisionCode(e.target.value)}
+                      placeholder="e.g. MUM-01"
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
                       disabled={loading}
                     />
                   </div>
@@ -213,7 +213,7 @@ export default function DivisionMaster() {
                           Processing...
                         </>
                       ) : (
-                        editId ? 'Update Changes' : 'Save Division'
+                        editId ? 'Update Changes' : 'Save Location'
                       )}
                     </button>
                   </div>
@@ -231,9 +231,9 @@ export default function DivisionMaster() {
                 <thead className="bg-transparent border-bottom border-secondary">
                   <tr>
                     <th className="ps-4 py-3">#</th>
-                    <th className="py-3">Division Name</th>
+                    <th className="py-3">Company</th>
+                    <th className="py-3">Location Name</th>
                     <th className="py-3">Code</th>
-                    <th className="py-3">Location</th>
                     <th className="py-3">Status</th>
                     <th className="py-3 pe-4 text-end">Actions</th>
                   </tr>
@@ -243,20 +243,20 @@ export default function DivisionMaster() {
                     <tr>
                       <td colSpan="6" className="text-center py-5">
                         <div className="spinner-border text-info"></div>
-                        <p className="mt-2 text-white-50">Loading divisions...</p>
+                        <p className="mt-2 text-white-50">Loading locations...</p>
                       </td>
                     </tr>
                   ) : list.length > 0 ? (
-                    list.map((d, i) => (
-                      <tr key={d.divisionId} className="border-bottom border-secondary">
+                    list.map((l, i) => (
+                      <tr key={l.locationId} className="border-bottom border-secondary">
                         <td className="ps-4 text-white-50">{i + 1}</td>
-                        <td className="fw-bold text-white">{d.divisionName}</td>
-                        <td><code className="text-info bg-dark px-2 py-1 rounded">{d.divisionCode || '---'}</code></td>
-                        <td className="text-white-50">
-                          {locations.find((l) => l.locationId === d.locationId)?.locationName || 'N/A'}
+                        <td className="fw-bold text-white">
+                          {companies.find((c) => c.companyId === l.companyId)?.companyName || 'N/A'}
                         </td>
+                        <td className="text-white-50">{l.locationName}</td>
+                        <td><code className="text-info bg-dark px-2 py-1 rounded">{l.locationCode || '---'}</code></td>
                         <td>
-                          {d.isActive ? (
+                          {l.isActive ? (
                             <span className="badge rounded-pill bg-success-subtle text-success border border-success px-3">
                               Active
                             </span>
@@ -269,7 +269,7 @@ export default function DivisionMaster() {
                         <td className="pe-4 text-end">
                           <button
                             className="btn btn-sm btn-outline-info me-2"
-                            onClick={() => startEdit(d)}
+                            onClick={() => startEdit(l)}
                             title="Edit"
                             disabled={loading}
                           >
@@ -277,7 +277,7 @@ export default function DivisionMaster() {
                           </button>
                           <button
                             className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleDelete(d.divisionId)}
+                            onClick={() => handleDelete(l.locationId)}
                             title="Delete"
                             disabled={loading}
                           >
@@ -290,7 +290,7 @@ export default function DivisionMaster() {
                     <tr>
                       <td colSpan="6" className="text-center py-5 text-muted">
                         <i className="bi bi-inbox fs-2 d-block mb-3"></i>
-                        No divisions found.
+                        No locations found.
                       </td>
                     </tr>
                   )}

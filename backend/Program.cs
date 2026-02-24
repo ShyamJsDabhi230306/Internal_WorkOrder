@@ -86,8 +86,10 @@ var app = builder.Build();
 // 5. Middleware pipeline
 // -----------------------------
 
-// CORS
+// ⭐ CORS MUST BE AT THE VERY TOP
 app.UseCors("AllowFrontend");
+
+
 
 // Swagger
 if (app.Environment.IsDevelopment())

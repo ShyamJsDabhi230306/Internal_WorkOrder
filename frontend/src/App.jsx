@@ -39,6 +39,7 @@ import PermissionRoute from "./routes/PermissionRoute";
 import { ToastContainer } from "react-toastify";
 import WorkOrderManagePage from "./Pages/Master/WorkOrderManage";
 import WorkOrderManageAccepted from "./Pages/Master/WorkOrderManageAccepted";
+import LocationMaster from "./Pages/Master/LocationMaster";
 
 export default function App() {
   return (
@@ -58,6 +59,16 @@ export default function App() {
               <PermissionRoute menuKey="Company">
                 <ProtectedRoute>
                   <CompanyMaster />
+                </ProtectedRoute>
+              </PermissionRoute>
+            }
+          />
+          <Route
+            path="/location"
+            element={
+              <PermissionRoute menuKey="location">
+                <ProtectedRoute>
+                  <LocationMaster />
                 </ProtectedRoute>
               </PermissionRoute>
             }

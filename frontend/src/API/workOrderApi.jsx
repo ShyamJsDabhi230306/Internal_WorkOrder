@@ -55,23 +55,42 @@ const API = `WorkOrder`
 //   return res.data;
 // };
 
+// this is very important method 
+// export const getWorkOrders = async () => {
+//   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-export const getWorkOrders = async () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+//   const params = {
+//     userTypeId: Number(user.userTypeId),
+//   };
+
+//   if (user.userTypeId === 2) params.divisionId = Number(user.divisionId);
+//   if (user.userTypeId === 3) params.vendorId = null;
+//   //Number(user.vendorId)
+
+//   const res = await axiosClient.get(
+//     `${API}/all`,
+//     { params }
+//   );
+
+//   return res.data;
+// };
+
+
+export const getWorkOrders = async (isCommonPool = false) => {
+  const auth = JSON.parse(localStorage.getItem("auth") || "{}");
+
+  const userTypeId = Number(auth.userTypeId);
+  const divisionId = Number(auth.divisionId);
+  const locationId = Number(auth.locationId);
 
   const params = {
-    userTypeId: Number(user.userTypeId),
+    userTypeId,
+    divisionId,
+    locationId,
+    isCommonPool
   };
 
-  if (user.userTypeId === 2) params.divisionId = Number(user.divisionId);
-  if (user.userTypeId === 3) params.vendorId = null;
-  //Number(user.vendorId)
-
-  const res = await axiosClient.get(
-    `${API}/all`,
-    { params }
-  );
-
+  const res = await axiosClient.get(`${API}/all`, { params });
   return res.data;
 };
 
@@ -82,21 +101,13 @@ export const getWorkOrderById = async (id) => {
   return await axiosClient.get(`${API}/get/${id}`);
 };
 
-
 export const updateWorkOrder = async (id, data) => {
   return await axiosClient.put(`${API}/update/${id}`, data);
 };
+
 // =============================
 // CREATE WORK ORDER
 // =============================
-
-// export const createWorkOrder = async (dto) => {
-//   const res = await axiosClient.post(`${API}`, dto);
-//   return res.data; // ⭐ THIS IS THE FIX
-// };
-
-
-
 export const createWorkOrder = async (formData) => {
   const res = await axiosClient.post(API, formData, {
     headers: {
@@ -106,25 +117,18 @@ export const createWorkOrder = async (formData) => {
   return res.data;
 };
 
-// API base
-
-
-
 export const previewWorkOrderNo = async (divisionId) => {
   const res = await axiosClient.get(`${API}/preview-no/${divisionId}`);
   return res.data;
 };
 
 // ===============================
-// ACCEPT WORK ORDER (Vendor)
+// ACCEPT WORK ORDER
 // ===============================
-// export const acceptWorkOrder = async (id, vendorId, data) => {
-//   return await axiosClient.put(`${API}/accept/${id}/${vendorId}`, data);
-// };
-
 export const acceptWorkOrder = async (id, data) => {
   return await axiosClient.put(`${API}/accept/${id}`, data);
-}
+};
+
 // =============================
 // DELETE WORK ORDER
 // =============================
@@ -135,15 +139,10 @@ export const deleteWorkOrder = async (id) => {
 // =============================
 // UPDATE WORK ORDER STATUS (ACCEPT)
 // =============================
-// export const updateWorkOrderStatus = async (id, vendorId, dto) => {
-//   return await axiosClient.put(`${API}/accept/${id}/${vendorId}`, dto);
-// };
 export const updateWorkOrderStatus = async (id, dto) => {
   return await axiosClient.put(`${API}/accept/${id}`, dto);
 };
-// =============================
-// OLD DISPATCH (IGNORE)
-// =============================
+
 export const updateWorkOrderDispatch = async (id, dto) => {
   return await axiosClient.put(`${API}/dispatch/${id}`, dto);
 };
@@ -172,13 +171,14 @@ export const receiveProduct = async (workOrderId, productId, body) => {
 // =============================
 // DISPATCH PRODUCT
 // =============================
-export const vendorDispatch = async (workOrderId, productId, qty, transportBy) => {
+export const vendorDispatch = async (workOrderId, productId, qty, transportBy, workOrderProductId) => {
   return axiosClient.put(
     `${API}/dispatch-product/${workOrderId}/${productId}`,
     {
       transportBy: transportBy,
       products: [
         {
+          workOrderProductId: workOrderProductId,
           productId: productId,
           dispatchQty: qty,
         },
@@ -187,30 +187,29 @@ export const vendorDispatch = async (workOrderId, productId, qty, transportBy) =
   );
 };
 
-
-
 export const getPoPdf = async (fileName) => {
   const res = await axiosClient.get(
     `WorkOrder/po/${encodeURIComponent(fileName)}`,
     {
-      responseType: "blob", // 🔑 VERY IMPORTANT
+      responseType: "blob",
     }
   );
 
-  return res.data; // Blob
+  return res.data;
 };
-
 
 export const getAcceptedWorkOrders = async (
   userTypeId,
   divisionId,
-  vendorId
+  locationId,
+  userId
 ) => {
   const res = await axiosClient.get("WorkOrder/accepted", {
     params: {
       userTypeId,
       divisionId,
-      vendorId
+      locationId,
+      userId
     }
   });
 

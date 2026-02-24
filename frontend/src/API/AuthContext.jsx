@@ -68,9 +68,9 @@ export const AuthProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : null;
   });
 
-  const login = (user) => {
-    localStorage.setItem("auth", JSON.stringify(user));
-    setAuth(user);
+  const login = (authData) => {
+    localStorage.setItem("auth", JSON.stringify(authData));
+    setAuth(authData);
   };
 
   const logout = () => {

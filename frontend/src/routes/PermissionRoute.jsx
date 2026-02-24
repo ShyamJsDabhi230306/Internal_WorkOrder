@@ -1,29 +1,26 @@
-
-
 import { Navigate } from "react-router-dom";
 import { usePermission } from "../routes/PermissionContext";
 import { useAuth } from "../API/AuthContext";
 
 export default function PermissionRoute({ menuKey, children }) {
-  const { canView, loading } = usePermission();
+  const { canView, ready } = usePermission();
   const { auth } = useAuth();
 
-  // 🔐 If NOT logged in → let ProtectedRoute handle it
+  // 🔐 Not logged in → let ProtectedRoute handle redirect to login
   if (!auth) {
     return children;
   }
 
-  // ⏳ Wait for permissions
-  if (loading) {
-    return <div className="p-5 text-center">Loading permissions...</div>;
+  // ⏳ Wait until permissions are loaded from auth context
+  if (!ready) {
+    return <div className="p-5 text-center text-white">Loading...</div>;
   }
 
-  // ✅ Allowed
+  // ✅ Check permission
   if (canView(menuKey)) {
     return children;
   }
 
-  // 🚫 Logged in but no permission
+  // 🚫 Logged in but no permission for this route
   return <Navigate to="/403" replace />;
 }
-
