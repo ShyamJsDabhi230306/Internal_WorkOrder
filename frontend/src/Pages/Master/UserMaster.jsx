@@ -282,7 +282,7 @@ export default function UserMaster() {
                       disabled={loading}
                     />
                   </div>
-                  <div className="col-md-3">
+                  {/* <div className="col-md-3">
                     <label className="form-label text-info small fw-bold">Notes</label>
                     <input
                       className="form-control bg-dark text-white border-secondary"
@@ -291,7 +291,7 @@ export default function UserMaster() {
                       onChange={(e) => setUserRemark(e.target.value)}
                       disabled={loading}
                     />
-                  </div>
+                  </div> */}
                   <div className="col-12 d-flex justify-content-end gap-2 mt-2">
                     <button type="button" className="btn btn-outline-secondary px-4" onClick={() => setShowModal(false)} disabled={loading}>
                       Cancel
@@ -308,9 +308,22 @@ export default function UserMaster() {
 
         <div className="card bg-dark-glass border-0 shadow-lg overflow-hidden">
           <div className="card-body p-0">
-            <div className="table-responsive">
+           <div 
+  className="table-responsive"
+  style={{ 
+    maxHeight: "500px", 
+    overflowY: "auto" 
+  }}
+>
               <table className="table table-dark table-hover align-middle mb-0">
-                <thead className="bg-transparent border-bottom border-secondary">
+                <thead 
+  className="bg-dark border-bottom border-secondary"
+  style={{ 
+    position: "sticky", 
+    top: 0, 
+    zIndex: 2 
+  }}
+>
                   <tr>
                     <th className="ps-4 py-3">#</th>
                     <th className="py-3">Role</th>
@@ -334,8 +347,8 @@ export default function UserMaster() {
                     users.map((u, i) => (
                       <tr key={u.userId} className="border-bottom border-secondary">
                         <td className="ps-4 text-white-50">{i + 1}</td>
-                        <td><span className="badge bg-info-subtle text-info border border-info">{u.userTypeName}</span></td>
-                        <td>{u.userFullName}</td>
+                       <td><span className="badge bg-primary text-white border border-info px-2 py-1">{u.userTypeName}</span></td>
+                        <td className="fw-bold text-white">{u.userFullName}</td>
                         <td className="fw-bold text-white">{u.userName}</td>
                         {isAdmin && (
                           <td>

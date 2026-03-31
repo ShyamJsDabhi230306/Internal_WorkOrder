@@ -7,7 +7,7 @@
 //   const navigate = useNavigate();
 
 //   // const [auth, setAuth] = useState(() => {
-//   //   const storedUser = localStorage.getItem("user");
+//   //   const storedUser = localStorage.getItem("auth");
 //   //   return storedUser ? JSON.parse(storedUser) : null;
 //   // });
 
@@ -35,12 +35,12 @@
 //   navigate("/newlogin", { replace: true });
 // };
 //   // const login = (user) => {
-//   //   localStorage.setItem("user", JSON.stringify(user));
+//   //   localStorage.setItem("auth", JSON.stringify(user));
 //   //   setAuth(user);
 //   // };
 
 //   // const logout = () => {
-//   //   localStorage.removeItem("user");
+//   //   localStorage.removeItem("auth");
 //   //   setAuth(null);
 //   //   navigate("/newlogin", { replace: true });
 //   // };

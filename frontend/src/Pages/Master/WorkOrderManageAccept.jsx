@@ -109,12 +109,12 @@ export default function WorkOrderManageAccept() {
               <table className="table table-dark table-hover align-middle mb-0">
                 <thead>
                   <tr>
-                    <th>WO No</th>
-                    <th>WO Date</th>
-                    <th>Source Division</th>
-                    <th>Target Delivery</th>
-                    <th>Files</th>
-                    <th>Items</th>
+                    <th className="text-center text-nowrap">WO No</th>
+                    <th className="text-center text-nowrap">WO Date</th>
+                    <th className="text-center text-nowrap">Source Division</th>
+                    <th className="text-center text-nowrap">Target Delivery</th>
+                    <th className="text-center text-nowrap">Files</th>
+                    <th className="text-center text-nowrap">Items</th>
                     <th width="180">Accept Delivery</th>
                     <th width="120">Action</th>
                   </tr>
@@ -129,11 +129,11 @@ export default function WorkOrderManageAccept() {
                   )}
                   {filteredList.map(wo => (
                     <tr key={wo.workOrderId}>
-                      <td>{wo.workOrderNo}</td>
-                      <td>{formatDate(wo.workOrderDate)}</td>
-                      <td>{wo.fromDivisionName}</td>
-                      <td>{formatDate(wo.deliveryDate)}</td>
-                      <td><POFileActions filePath={wo.poFilePath} /></td>
+                      <td className="fw-bold text-white text-center text-nowrap">{wo.workOrderNo}</td>
+                      <td className="text-white text-center text-nowrap">{formatDate(wo.workOrderDate)}</td>
+                      <td className="text-white text-center text-nowrap">{wo.fromDivisionName}</td>
+                      <td className="text-white text-center text-nowrap">{formatDate(wo.deliveryDate)}</td>
+                      <td ><POFileActions filePath={wo.poFilePath} /></td>
                       <td>
                         <button
                           className="btn btn-sm btn-outline-info"
@@ -184,9 +184,9 @@ export default function WorkOrderManageAccept() {
                 <tbody>
                   {filteredList.find(x => x.workOrderId === expandedRow)?.products.map(p => (
                     <tr key={p.productId}>
-                      <td>{p.category}</td>
-                      <td>{p.product}</td>
-                      <td>{p.quantity}</td>
+                      <td className="text-white">{p.category}</td>
+                      <td className="text-white">{p.product}</td>
+                      <td className="text-white">{p.quantity}</td>
                     </tr>
                   ))}
                 </tbody>

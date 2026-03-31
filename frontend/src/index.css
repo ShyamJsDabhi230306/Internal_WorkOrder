@@ -1,4 +1,10 @@
-/* Global Visibility Fixes */
+/* ==========================================================
+   GLOBAL VISIBILITY OVERRIDES
+   This file MUST be imported LAST in main.jsx 
+   so all rules here override Bootstrap + style.css
+   ========================================================== */
+
+/* Labels, Placeholders, and Form Inputs */
 label {
     color: #ffffff !important;
     opacity: 0.9 !important;
@@ -10,7 +16,6 @@ label {
     font-style: italic;
 }
 
-/* Ensure inputs are always readable */
 .form-control,
 .form-select {
     color: #ffffff !important;
@@ -25,7 +30,75 @@ label {
 /* High contrast for Sidebar titles */
 .sidebar-section-title {
     color: #48bece !important;
-    /* Brighter teal for titles */
     opacity: 1 !important;
     letter-spacing: 1px;
 }
+
+/* ──────────────────────────────────────────────
+   DARK TABLE – Pure White Text on ALL cells
+   Covers: .table-dark, .table.table-dark, etc.
+   ────────────────────────────────────────────── */
+.table-dark td,
+.table-dark th,
+.table.table-dark td,
+.table.table-dark th,
+.table-dark tbody td,
+.table-dark thead th {
+    color: #ffffff !important;
+}
+
+/* Table header accent — brighter teal for visual hierarchy */
+.table-dark thead th,
+.table.table-dark thead th {
+    color: #a0e4ef !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.5px;
+}
+
+/* Badges inside dark tables must be white */
+.table-dark .badge,
+.table.table-dark .badge {
+    color: #ffffff !important;
+}
+
+/* Select dropdown options (dark bg) should show white text */
+.form-select.bg-dark option,
+select.bg-dark option {
+    color: #ffffff !important;
+    background-color: #1a1d23 !important;
+}
+
+/* Card text inside dark glass cards */
+.bg-dark-glass,
+.bg-dark-glass .card-body,
+.bg-dark-glass .card-header {
+    color: #ffffff !important;
+}
+
+/* ──────────────────────────────────────────────
+   FORCE PURE WHITE ON ALL DATA (Neutralize Muted)
+   Ensures text-white-50 behaves like text-white
+   ────────────────────────────────────────────── */
+.table-dark .text-white-50,
+.table .text-white-50,
+td.text-white-50,
+span.text-white-50 {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Row Hover Glow Effect for professional feel */
+.table-dark tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    color: #ffffff !important;
+}
+
+/* Ensure all table data is bold and white by default */
+.table-dark td {
+    font-weight: 500;
+}
+
+
+

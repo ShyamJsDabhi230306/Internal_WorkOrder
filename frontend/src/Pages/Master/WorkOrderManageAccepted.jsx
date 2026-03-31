@@ -87,28 +87,41 @@ export default function WorkOrderManageAccepted() {
             </div>
           )}
           <div className="card-body p-0">
-            <div className="table-responsive">
+         <div 
+  className="table-responsive"
+  style={{ 
+    maxHeight: "500px", 
+    overflowY: "auto" 
+  }}
+>
               <table className="table table-dark table-hover align-middle mb-0">
-                <thead>
+                <thead 
+  className="bg-dark border-bottom border-secondary"
+  style={{ 
+    position: "sticky", 
+    top: 0, 
+    zIndex: 2 
+  }}
+>
                   <tr>
-                    <th>WO No</th>
-                    <th>WO Date</th>
-                    <th>Source Division</th>
-                    <th>Accepted Date</th>
-                    <th>Target Delivery</th>
-                    <th>Files</th>
-                    <th>Items</th>
-                    <th width="120">Status</th>
+                    <th className="text-center text-nowrap">WO No</th>
+                    <th className="text-center text-nowrap">WO Date</th>
+                    <th className="text-center text-nowrap">Source Division</th>
+                    <th className="text-center text-nowrap">Accepted Date</th>
+                    <th className="text-center text-nowrap">Target Delivery</th>
+                    <th className="text-center text-nowrap">Files</th>
+                    <th className="text-center text-nowrap">Items</th>
+                    <th className="text-center text-nowrap" width="120">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredList.map(wo => (
                     <tr key={wo.workOrderId}>
-                      <td>{wo.workOrderNo}</td>
-                      <td>{formatDate(wo.workOrderDate)}</td>
-                      <td>{wo.fromDivisionName}</td>
-                      <td>{formatDate(wo.acceptDate)}</td>
-                      <td>{formatDate(wo.acceptDeliveryDate)}</td>
+                      <td className="fw-bold text-white text-center text-nowrap">{wo.workOrderNo}</td>
+                      <td className="text-white text-center text-nowrap">{formatDate(wo.workOrderDate)}</td>
+                      <td className="text-white text-center text-nowrap">{wo.fromDivisionName}</td>
+                      <td className="text-white text-center text-nowrap">{formatDate(wo.acceptDate)}</td>
+                      <td className="text-white text-center text-nowrap">{formatDate(wo.acceptDeliveryDate)}</td>
                       <td><POFileActions filePath={wo.poFilePath} /></td>
                       <td>
                         <button
@@ -142,9 +155,9 @@ export default function WorkOrderManageAccepted() {
                 <tbody>
                   {filteredList.find(x => x.workOrderId === expandedRow)?.products.map(p => (
                     <tr key={p.productId}>
-                      <td>{p.category}</td>
-                      <td>{p.product}</td>
-                      <td>{p.quantity}</td>
+                      <td className="text-white">{p.category}</td>
+                      <td className="text-white">{p.product}</td>
+                      <td className="text-white">{p.quantity}</td>
                     </tr>
                   ))}
                 </tbody>

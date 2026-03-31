@@ -6,7 +6,7 @@ import {
   receiveProduct,
 } from "../../API/workOrderApi";
 import POFileActions from "../../Components/POFileActions";
-
+import { toast } from "react-toastify";
 
 export default function WorkOrderList() {
   const [workOrders, setWorkOrders] = useState([]);
@@ -17,7 +17,7 @@ export default function WorkOrderList() {
   const navigate = useNavigate();
   const getStatusColor = (status) => {
     if (status === "On Time") return "seagreen";
-    if (status.startsWith("Late Delivery")) return "red";   // ⭐ FIX
+    // if (status.startsWith("Late Delivery")) return "red";   // ⭐ FIX
     if (status === "Pending Dispatch") return "#FFC107";
     return "gray";
   };
@@ -51,7 +51,12 @@ export default function WorkOrderList() {
   const getProductKey = (workOrderId, productId, woProductId) =>
     `${workOrderId}_${productId}_${woProductId}`;
 
-  const handleReceiveQtyChange = (workOrderId, productId, woProductId, value) => {
+  const handleReceiveQtyChange = (
+    workOrderId,
+    productId,
+    woProductId,
+    value,
+  ) => {
     const key = getProductKey(workOrderId, productId, woProductId);
     setReceiveQty((prev) => ({
       ...prev,
@@ -64,7 +69,7 @@ export default function WorkOrderList() {
     productId,
     dispatchedTotal,
     receivedTotal,
-    woProductId
+    woProductId,
   ) => {
     const key = getProductKey(workOrderId, productId, woProductId);
     const qty = Number(receiveQty[key] || 0);
@@ -72,16 +77,21 @@ export default function WorkOrderList() {
     const maxReceivable = dispatchedTotal - receivedTotal;
 
     if (!qty || qty <= 0) {
-      return alert("Please enter a valid quantity greater than 0.");
+      return toast.warning("Please enter a valid quantity greater than 0.");
     }
 
     if (qty > maxReceivable) {
-      return alert(`Cannot receive more than available. Max allowed: ${maxReceivable}`);
+      return toast.warning(
+        `Cannot receive more than available. Max allowed: ${maxReceivable}`,
+      );
     }
 
     try {
       setLoading(true);
-      await receiveProduct(workOrderId, productId, { qty, workOrderProductId: woProductId });
+      await receiveProduct(workOrderId, productId, {
+        qty,
+        workOrderProductId: woProductId,
+      });
 
       setReceiveQty((prev) => ({
         ...prev,
@@ -89,26 +99,34 @@ export default function WorkOrderList() {
       }));
 
       await loadData();
-      alert("Product received successfully!");
+      toast.success("Product received successfully!");
     } catch (err) {
       console.error("Receive Product Error:", err);
-      alert(err.response?.data?.message || "Failed to receive product. Please try again.");
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to receive product. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleMarkComplete = async (woId) => {
-    if (!window.confirm("Are you sure you want to mark this work order as completed?")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to mark this work order as completed?",
+      )
+    )
+      return;
 
     try {
       setLoading(true);
       await receiveWorkOrder(woId);
       await loadData();
-      alert("Work order marked as completed!");
+      toast.info("Work order marked as completed!");
     } catch (err) {
       console.error("Complete WO Error:", err);
-      alert("Failed to complete work order.");
+      toast.error("Failed to complete work order.");
     } finally {
       setLoading(false);
     }
@@ -116,7 +134,7 @@ export default function WorkOrderList() {
 
   const isFullyReceived = (wo) =>
     wo.products.every(
-      (p) => Number(p.receivedQuantity || 0) >= Number(p.quantity || 0)
+      (p) => Number(p.receivedQuantity || 0) >= Number(p.quantity || 0),
     );
 
   const formatDate = (v) => {
@@ -146,6 +164,7 @@ export default function WorkOrderList() {
         w.vendorName?.toLowerCase().includes(s) ||
         w.priorityType?.toLowerCase().includes(s) ||
         w.status?.toLowerCase().includes(s) ||
+        w.pono?.toLowerCase().includes(s) ||
         formatDate(w.workOrderDate)?.includes(s) ||
         formatDate(w.deliveryDate)?.includes(s) ||
         formatDate(w.acceptDate)?.includes(s) ||
@@ -180,7 +199,6 @@ export default function WorkOrderList() {
     setFilteredList(filtered);
   };
 
-
   return (
     <div className="card shadow-sm">
       <div className="card-header py-3">
@@ -204,38 +222,55 @@ export default function WorkOrderList() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-
       </div>
 
-      <div className="card-body">
-        <div className="table-scroll mt-3">
-
-          <table className="table table-bordered  align-middle fixed-header table-single-line">
-            <thead>
+      <div className="card-body p-0">
+        <div
+          className="table-responsive"
+          style={{
+            maxHeight: "500px",
+            overflowY: "auto",
+          }}
+        >
+          <table className="table table-bordered table-striped m-0">
+            {/* <thead className="bg-dark border-bottom border-secondary"> */}
+            <thead
+              className="bg-dark border-bottom border-secondary"
+              style={{
+                position: "sticky",
+                top: 0,
+                zIndex: 2,
+              }}
+            >
               <tr>
                 <th>#</th>
-                <th>WO No</th>
-                {/* <th>Person</th> */}
-                <th>Location</th>
-                <th>Division</th>
-                <th>Status</th>
-                <th>Delivery Status</th>
+                <th className="text-center text-nowrap">WO No</th>
+                {/* className="text-center text-nowrap" <th>Person</th> */}
+                <th className="text-center text-nowrap">Location</th>
+                <th className="text-center text-nowrap">Division</th>
+                <th className="text-center text-nowrap">PoNo</th>
+                <th className="text-center text-nowrap">Status</th>
+                <th className="text-center text-nowrap">Delivery Status</th>
 
-                <th>Work Order Date</th>
-                <th>Delivery Date</th>
+                <th className="text-center text-nowrap">Work Order Date</th>
+                <th className="text-center text-nowrap">Delivery Date</th>
 
-                <th>Order Type</th>
-                <th>Prepared By</th>
-                <th>Marketing Person</th>
+                <th className="text-center text-nowrap">Order Type</th>
+                <th className="text-center text-nowrap">Prepared By</th>
+                <th className="text-center text-nowrap">Marketing Person</th>
 
-                <th>Accept Date</th>
-                <th>Accept Delivery Date</th>
+                <th className="text-center text-nowrap">Accept Date</th>
+                <th className="text-center text-nowrap">
+                  Accept Delivery Date
+                </th>
 
-                <th>Dispatch Date</th>
-                <th>Receive Date</th>
-                <th>Attachments</th>
-                <th>Products</th>
-                <th width="220">Actions</th>
+                <th className="text-center text-nowrap">Dispatch Date</th>
+                <th className="text-center text-nowrap">Receive Date</th>
+                <th className="text-center text-nowrap">Attachments</th>
+                <th className="text-center text-nowrap">Products</th>
+                <th className="text-center text-nowrap" width="220">
+                  Actions
+                </th>
               </tr>
             </thead>
 
@@ -246,41 +281,72 @@ export default function WorkOrderList() {
                 return (
                   <>
                     <tr key={w.workOrderId}>
-                      <td>{index + 1}</td>
-                      <td>{w.workOrderNo}</td>
+                      <td className="text-center text-nowrap">{index + 1}</td>
+                      <td className="text-center text-nowrap">
+                        {w.workOrderNo}
+                      </td>
                       {/* <td>{w.vendorName}</td> */}
-                      <td>{w.toLocationName}</td>
-                      <td>{w.toDivisionName}</td>
-                      <td>
+                      <td className="text-center text-nowrap">
+                        {w.toLocationName}
+                      </td>
+                      <td className="text-center text-nowrap">
+                        {w.toDivisionName}
+                      </td>
+                      <td className="text-center text-nowrap">{w.pono}</td>
+                      <td className="text-center text-nowrap">
                         <span className="badge bg-info">{w.status}</span>
                       </td>
-                      <td style={{ backgroundColor: getStatusColor(w.deliveryStatus), color: 'white' }}>
+                      <td
+                        className="text-center text-nowrap"
+                        style={{
+                          backgroundColor: getStatusColor(w.deliveryStatus),
+                          color: "white",
+                        }}
+                      >
                         {w.deliveryStatus}
                       </td>
 
-                      <td>{formatDate(w.workOrderDate)}</td>
-                      <td>{formatDate(w.deliveryDate)}</td>
+                      <td className="text-center text-nowrap">
+                        {formatDate(w.workOrderDate)}
+                      </td>
+                      <td className="text-center text-nowrap">
+                        {formatDate(w.deliveryDate)}
+                      </td>
 
-                      <td>{w.orderTypeName}</td>
-                      <td>{w.preparedBy}</td>
-                      <td>{w.authorizedPerson}</td>
+                      <td className="text-center text-nowrap">
+                        {w.orderTypeName}
+                      </td>
+                      <td className="text-center text-nowrap">
+                        {w.preparedBy}
+                      </td>
+                      <td className="text-center text-nowrap">
+                        {w.authorizedPerson}
+                      </td>
 
-                      <td>{formatDate(w.acceptDate)}</td>
-                      <td>{formatDate(w.acceptDeliveryDate)}</td>
+                      <td className="text-center text-nowrap">
+                        {formatDate(w.acceptDate)}
+                      </td>
+                      <td className="text-center text-nowrap">
+                        {formatDate(w.acceptDeliveryDate)}
+                      </td>
 
-                      <td>{formatDate(w.dispatchDate)}</td>
-                      <td>{formatDate(w.receiveDate)}</td>
-                      <td className="text-center">
+                      <td className="text-center text-nowrap">
+                        {formatDate(w.dispatchDate)}
+                      </td>
+                      <td className="text-center text-nowrap">
+                        {formatDate(w.receiveDate)}
+                      </td>
+                      <td className="text-center text-nowrap">
                         <POFileActions filePath={w.poFilePath} />
                       </td>
-                      <td>
+                      <td className="text-center text-nowrap">
                         <button
                           className="btn btn-sm btn-outline-primary"
                           onClick={() =>
                             setExpandedRow(
                               expandedRow === w.workOrderId
                                 ? null
-                                : w.workOrderId
+                                : w.workOrderId,
                             )
                           }
                         >
@@ -288,13 +354,16 @@ export default function WorkOrderList() {
                         </button>
                       </td>
 
-
-                      <td>
+                      <td className="text-center text-nowrap">
                         {/* ⭐ HIDE EDIT IF STATUS = Accepted / Dispatched / Completed */}
-                        {!["Accepted", "Dispatched", "Completed"].includes(w.status) && (
+                        {!["Accepted", "Dispatched", "Completed"].includes(
+                          w.status,
+                        ) && (
                           <button
                             className="btn btn-warning btn-sm me-2"
-                            onClick={() => navigate(`/workorder/edit/${w.workOrderId}`)}
+                            onClick={() =>
+                              navigate(`/workorder/edit/${w.workOrderId}`)
+                            }
                           >
                             Edit
                           </button>
@@ -303,7 +372,11 @@ export default function WorkOrderList() {
                         <button
                           className="btn btn-primary btn-sm"
                           onClick={() => handleMarkComplete(w.workOrderId)}
-                          disabled={w.status === "Completed" || !fullyReceived || loading}
+                          disabled={
+                            w.status === "Completed" ||
+                            !fullyReceived ||
+                            loading
+                          }
                         >
                           {w.status === "Completed"
                             ? "Completed"
@@ -312,107 +385,147 @@ export default function WorkOrderList() {
                               : "Dispatch Pending"}
                         </button>
                       </td>
-
                     </tr>
 
                     {expandedRow === w.workOrderId && (
                       <tr>
-                        <td colSpan="16">
+                        <td colSpan="18">
                           <h6 className="fw-bold mb-2">Product Breakdown</h6>
 
                           <table className="table table-sm table-bordered">
                             <thead>
                               <tr>
-                                <th>Category</th>
-                                <th>Product</th>
-                                <th>Total Qty</th>
-                                <th>Last Dispatch Qty</th>
-                                <th> Total Dispatched Qty</th>
-                                <th>Received Qty</th>
-                                <th>Pending Qty</th>
-                                <th>Receive</th>
+                                <th className="text-center text-nowrap">
+                                  Category
+                                </th>
+                                <th className="text-center text-nowrap">
+                                  Product
+                                </th>
+                                <th className="text-center text-nowrap">
+                                  Total Qty
+                                </th>
+                                <th className="text-center text-nowrap">
+                                  Last Dispatch Qty
+                                </th>
+                                <th className="text-center text-nowrap">
+                                  Total Dispatched Qty
+                                </th>
+                                <th className="text-center text-nowrap">
+                                  Received Qty
+                                </th>
+                                <th className="text-center text-nowrap">
+                                  Pending Qty
+                                </th>
+                                <th className="text-center text-nowrap">
+                                  Receive
+                                </th>
                               </tr>
                             </thead>
 
                             <tbody>
-                              {w.products.map((p, i) => {
-                                const total = Number(p.quantity || 0);
+                              {w.products && w.products.length > 0 ? (
+                                w.products.map((p) => {
+                                  const total = Number(p.quantity || 0);
+                                  const lastDispatchQty =
+                                    p.dispatchHistories?.length > 0
+                                      ? p.dispatchHistories[
+                                          p.dispatchHistories.length - 1
+                                        ].dispatchQty
+                                      : 0;
+                                  const dispatchedTotal = Number(
+                                    p.dispatchedQuantity || 0,
+                                  );
+                                  const received = Number(
+                                    p.receivedQuantity || 0,
+                                  );
+                                  const pending = total - received;
+                                  const maxReceivable =
+                                    dispatchedTotal - received;
 
-                                const lastDispatchQty = Number(p.lastDispatchedQty ?? 0); // last cycle
-                                const dispatchedTotal = Number(p.dispatchedQuantity || 0); // TOTAL dispatched
+                                  const key = `${w.workOrderId}_${p.productId}_${p.workOrderProductId}`;
+                                  const currentInput = receiveQty[key] || "";
 
-                                const received = Number(p.receivedQuantity || 0);
-                                const pending = total - received;
+                                  const canReceive =
+                                    maxReceivable > 0 && received < total;
 
-                                // receive allowed (total dispatched - total received)
-                                const maxReceivable = dispatchedTotal - received;
+                                  return (
+                                    <tr key={p.workOrderProductId}>
+                                      <td className="text-center text-nowrap">
+                                        {p.category}
+                                      </td>
+                                      <td className="text-center text-nowrap">
+                                        {p.product}
+                                      </td>
+                                      <td className="text-center text-nowrap">
+                                        {total}
+                                      </td>
+                                      <td className="text-center text-nowrap">
+                                        {lastDispatchQty}
+                                      </td>
+                                      <td className="text-center text-nowrap">
+                                        {dispatchedTotal}
+                                      </td>
+                                      <td className="text-center text-nowrap">
+                                        {received}
+                                      </td>
+                                      <td className="text-center text-nowrap">
+                                        {pending}
+                                      </td>
 
-                                const key = getProductKey(w.workOrderId, p.productId, p.workOrderProductId);
-                                const currentInput = receiveQty[key] || "";
-
-                                const canReceive =
-                                  maxReceivable > 0 && received < total;
-
-                                return (
-                                  <tr key={p.workOrderProductId}>
-                                    <td>{p.category}</td>
-                                    <td>{p.product}</td>
-                                    <td>{total}</td>
-
-                                    {/* LAST Dispatch Qty */}
-                                    <td>{lastDispatchQty}</td>
-
-                                    {/* NEW COLUMN: TOTAL Dispatched Qty */}
-                                    <td>{dispatchedTotal}</td>
-
-                                    <td>{received}</td>
-                                    <td>{pending}</td>
-
-                                    <td>
-                                      {canReceive ? (
-                                        <div className="d-flex gap-2 align-items-center">
-                                          <input
-                                            type="number"
-                                            className="form-control form-control-sm no-spin"
-                                            style={{ maxWidth: "90px" }}
-                                            placeholder="Qty"
-                                            value={currentInput}
-                                            onChange={(e) =>
-                                              handleReceiveQtyChange(
-                                                w.workOrderId,
-                                                p.productId,
-                                                p.workOrderProductId,
-                                                e.target.value
-                                              )
-                                            }
-                                          />
-
-                                          <button
-                                            className="btn btn-sm btn-success"
-                                            onClick={() =>
-                                              handleReceiveProduct(
-                                                w.workOrderId,
-                                                p.productId,
-                                                dispatchedTotal,
-                                                received,
-                                                p.workOrderProductId
-                                              )
-                                            }
-                                          >
-                                            Receive
-                                          </button>
-                                        </div>
-                                      ) : (
-                                        <span className="text-muted small">
-                                          {received >= total ? "Received" : "Pending"}
-                                        </span>
-                                      )}
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                                      <td>
+                                        {canReceive ? (
+                                          <div className="d-flex gap-2 align-items-center">
+                                            <input
+                                              type="number"
+                                              className="form-control form-control-sm"
+                                              style={{ maxWidth: "90px" }}
+                                              value={currentInput}
+                                              onChange={(e) =>
+                                                handleReceiveQtyChange(
+                                                  w.workOrderId,
+                                                  p.productId,
+                                                  p.workOrderProductId,
+                                                  e.target.value,
+                                                )
+                                              }
+                                            />
+                                            <button
+                                              className="btn btn-sm btn-success"
+                                              onClick={() =>
+                                                handleReceiveProduct(
+                                                  w.workOrderId,
+                                                  p.productId,
+                                                  dispatchedTotal,
+                                                  received,
+                                                  p.workOrderProductId,
+                                                )
+                                              }
+                                            >
+                                              Receive
+                                            </button>
+                                          </div>
+                                        ) : (
+                                          <span className="text-muted small">
+                                            {received >= total
+                                              ? "Received"
+                                              : "Not Dispatched Total Yet"}
+                                          </span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  );
+                                })
+                              ) : (
+                                <tr>
+                                  <td
+                                    colSpan="8"
+                                    className="text-center text-muted"
+                                  >
+                                    No products found
+                                  </td>
+                                </tr>
+                              )}
                             </tbody>
-
                           </table>
                         </td>
                       </tr>
@@ -427,6 +540,3 @@ export default function WorkOrderList() {
     </div>
   );
 }
-
-
-

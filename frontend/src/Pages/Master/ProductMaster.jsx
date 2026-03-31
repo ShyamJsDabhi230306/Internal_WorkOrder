@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import Layout from "../../layout/Layout";
-import { getProducts, createProduct, updateProduct, deleteProduct } from "../../API/productApi";
+import {
+  getProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "../../API/productApi";
 import { getCategories } from "../../API/categoryApi";
 import { toast } from "react-toastify";
 
@@ -23,7 +28,10 @@ export default function ProductMaster() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [prodData, catData] = await Promise.all([getProducts(), getCategories()]);
+      const [prodData, catData] = await Promise.all([
+        getProducts(),
+        getCategories(),
+      ]);
       setProducts(prodData || []);
       setCategories(catData || []);
     } catch (error) {
@@ -103,7 +111,8 @@ export default function ProductMaster() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
     setLoading(true);
     try {
       await deleteProduct(id);
@@ -123,11 +132,16 @@ export default function ProductMaster() {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div>
             <h3 className="mb-0 text-white fw-bold">Product Master</h3>
-            <p className="text-info small mb-0">Manage items and SKU definitions</p>
+            <p className="text-info small mb-0">
+              Manage items and SKU definitions
+            </p>
           </div>
           <button
             className="btn btn-primary d-flex align-items-center gap-2 shadow"
-            onClick={() => { resetForm(); setShowModal(true); }}
+            onClick={() => {
+              resetForm();
+              setShowModal(true);
+            }}
             disabled={loading}
           >
             <i className="bi bi-plus-circle"></i> Add Product
@@ -143,14 +157,21 @@ export default function ProductMaster() {
         {showModal && (
           <div className="card bg-dark-glass border-0 mb-4 shadow-lg animate__animated animate__fadeInDown">
             <div className="card-header bg-transparent border-bottom border-secondary d-flex justify-content-between align-items-center py-3">
-              <h5 className="mb-0 text-white fw-bold">{editMode ? "Edit Product" : "Add New Product"}</h5>
-              <button className="btn-close btn-close-white" onClick={() => setShowModal(false)}></button>
+              <h5 className="mb-0 text-white fw-bold">
+                {editMode ? "Edit Product" : "Add New Product"}
+              </h5>
+              <button
+                className="btn-close btn-close-white"
+                onClick={() => setShowModal(false)}
+              ></button>
             </div>
             <div className="card-body p-4">
               <form onSubmit={editMode ? handleUpdate : handleSave}>
                 <div className="row g-4">
                   <div className="col-md-4">
-                    <label className="form-label text-info small fw-bold">Category *</label>
+                    <label className="form-label text-info small fw-bold">
+                      Category *
+                    </label>
                     <select
                       className="form-select bg-dark text-white border-secondary"
                       value={categoryId}
@@ -167,7 +188,9 @@ export default function ProductMaster() {
                     </select>
                   </div>
                   <div className="col-md-4">
-                    <label className="form-label text-info small fw-bold">Product Name *</label>
+                    <label className="form-label text-info small fw-bold">
+                      Product Name *
+                    </label>
                     <input
                       className="form-control bg-dark text-white border-secondary"
                       placeholder="Enter product name"
@@ -177,8 +200,10 @@ export default function ProductMaster() {
                       disabled={loading}
                     />
                   </div>
-                  <div className="col-md-4">
-                    <label className="form-label text-info small fw-bold">Remark (Optional)</label>
+                  {/* <div className="col-md-4">
+                    <label className="form-label text-info small fw-bold">
+                      Remark (Optional)
+                    </label>
                     <input
                       className="form-control bg-dark text-white border-secondary"
                       placeholder="Additional notes"
@@ -186,13 +211,28 @@ export default function ProductMaster() {
                       onChange={(e) => setProductRemark(e.target.value)}
                       disabled={loading}
                     />
-                  </div>
+                  </div> */}
                   <div className="col-12 d-flex justify-content-end gap-2 mt-4">
-                    <button type="button" className="btn btn-outline-secondary px-4" onClick={() => setShowModal(false)} disabled={loading}>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary px-4"
+                      onClick={() => setShowModal(false)}
+                      disabled={loading}
+                    >
                       Cancel
                     </button>
-                    <button type="submit" className="btn btn-primary px-4 shadow" disabled={loading}>
-                      {loading ? <span className="spinner-border spinner-border-sm"></span> : (editMode ? "Update Changes" : "Save Product")}
+                    <button
+                      type="submit"
+                      className="btn btn-primary px-4 shadow"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <span className="spinner-border spinner-border-sm"></span>
+                      ) : editMode ? (
+                        "Update Changes"
+                      ) : (
+                        "Save Product"
+                      )}
                     </button>
                   </div>
                 </div>
@@ -203,14 +243,27 @@ export default function ProductMaster() {
 
         <div className="card bg-dark-glass border-0 shadow-lg overflow-hidden">
           <div className="card-body p-0">
-            <div className="table-responsive">
+            <div
+              className="table-responsive"
+              style={{
+                maxHeight: "500px",
+                overflowY: "auto",
+              }}
+            >
               <table className="table table-dark table-hover align-middle mb-0">
-                <thead className="bg-transparent border-bottom border-secondary">
+                <thead
+                  className="bg-dark border-bottom border-secondary"
+                  style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 2,
+                  }}
+                >
                   <tr>
                     <th className="ps-4 py-3">#</th>
                     <th className="py-3">Category</th>
                     <th className="py-3">Product Name</th>
-                    <th className="py-3">Remark</th>
+                    {/* <th className="py-3">Remark</th> */}
                     <th className="py-3 pe-4 text-end">Actions</th>
                   </tr>
                 </thead>
@@ -219,18 +272,26 @@ export default function ProductMaster() {
                     <tr>
                       <td colSpan="5" className="text-center py-5">
                         <div className="spinner-border text-info"></div>
-                        <p className="mt-2 text-white-50">Loading products...</p>
+                        <p className="mt-2 text-white-50">
+                          Loading products...
+                        </p>
                       </td>
                     </tr>
                   ) : products.length > 0 ? (
                     products.map((p, i) => (
-                      <tr key={p.productId} className="border-bottom border-secondary">
+                      <tr
+                        key={p.productId}
+                        className="border-bottom border-secondary"
+                      >
                         <td className="ps-4 text-white-50">{i + 1}</td>
                         <td className="text-info small fw-bold">
-                          {categories.find((c) => c.categoryId === p.categoryId)?.categoryName || 'N/A'}
+                          {categories.find((c) => c.categoryId === p.categoryId)
+                            ?.categoryName || "N/A"}
                         </td>
                         <td className="fw-bold text-white">{p.productName}</td>
-                        <td className="text-white-50">{p.productRemark || '---'}</td>
+                        {/* <td className="text-white-50">
+                          {p.productRemark || "---"}
+                        </td> */}
                         <td className="pe-4 text-end">
                           <button
                             className="btn btn-sm btn-outline-info me-2"

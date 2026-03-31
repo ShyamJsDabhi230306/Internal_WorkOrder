@@ -28,7 +28,7 @@ export default function Sidebar() {
     <aside className="ra-sidebar">
       <div className="ra-sidebar-header">
         <i className="bi bi-gear-fill me-2"></i>
-        <span>Work Order System</span>
+        {/* <span>Work Order System</span> */}
       </div>
 
       {canView("reports") && (

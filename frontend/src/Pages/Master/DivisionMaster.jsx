@@ -226,9 +226,22 @@ export default function DivisionMaster() {
         {/* LIST SECTION */}
         <div className="card bg-dark-glass border-0 shadow-lg overflow-hidden">
           <div className="card-body p-0">
-            <div className="table-responsive">
+            <div 
+  className="table-responsive"
+  style={{ 
+    maxHeight: "500px", 
+    overflowY: "auto" 
+  }}
+>
               <table className="table table-dark table-hover align-middle mb-0">
-                <thead className="bg-transparent border-bottom border-secondary">
+               <thead 
+  className="bg-dark border-bottom border-secondary"
+  style={{ 
+    position: "sticky", 
+    top: 0, 
+    zIndex: 2 
+  }}
+>
                   <tr>
                     <th className="ps-4 py-3">#</th>
                     <th className="py-3">Division Name</th>
@@ -257,11 +270,11 @@ export default function DivisionMaster() {
                         </td>
                         <td>
                           {d.isActive ? (
-                            <span className="badge rounded-pill bg-success-subtle text-success border border-success px-3">
+                            <span className="badge bg-primary text-white border border-info px-2 py-1">
                               Active
                             </span>
                           ) : (
-                            <span className="badge rounded-pill bg-danger-subtle text-danger border border-danger px-3">
+                            <span className="badge bg-primary text-white border border-info px-2 py-1">
                               Inactive
                             </span>
                           )}

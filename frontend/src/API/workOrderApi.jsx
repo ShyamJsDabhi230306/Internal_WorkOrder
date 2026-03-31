@@ -76,15 +76,33 @@ const API = `WorkOrder`
 // };
 
 
+// export const getWorkOrders = async (isCommonPool = false) => {
+//   const auth = JSON.parse(localStorage.getItem("auth") || "{}");
+
+//   const userTypeId = Number(auth.userTypeId);
+//   const divisionId = Number(auth.divisionId);
+//   const locationId = Number(auth.locationId);
+
+//   const params = {
+//     userTypeId,
+//     divisionId,
+//     locationId,
+//     isCommonPool
+//   };
+
+//   const res = await axiosClient.get(`${API}/all`, { params });
+//   return res.data;
+// };
 export const getWorkOrders = async (isCommonPool = false) => {
   const auth = JSON.parse(localStorage.getItem("auth") || "{}");
 
-  const userTypeId = Number(auth.userTypeId);
-  const divisionId = Number(auth.divisionId);
-  const locationId = Number(auth.locationId);
+  const userTypeId = Number(auth.userTypeId) || 0;
+  const divisionId = Number(auth.divisionId) || 0;
+  const locationId = Number(auth.locationId) || 0;
 
   const params = {
     userTypeId,
+    currentUserId: auth.userId, 
     divisionId,
     locationId,
     isCommonPool
@@ -93,7 +111,6 @@ export const getWorkOrders = async (isCommonPool = false) => {
   const res = await axiosClient.get(`${API}/all`, { params });
   return res.data;
 };
-
 // ===============================
 // GET WORK ORDER BY ID
 // ===============================
@@ -171,22 +188,36 @@ export const receiveProduct = async (workOrderId, productId, body) => {
 // =============================
 // DISPATCH PRODUCT
 // =============================
-export const vendorDispatch = async (workOrderId, productId, qty, transportBy, workOrderProductId) => {
+// export const vendorDispatch = async (workOrderId, productId, qty, transportBy, workOrderProductId) => {
+//   return axiosClient.put(
+//     `${API}/dispatch-product/${workOrderId}/${productId}`,
+//     {
+//       transportBy: transportBy,
+//       products: [
+//         {
+//           workOrderProductId: workOrderProductId,
+//           productId: productId,
+//           dispatchQty: qty,
+//         },
+//       ],
+//     }
+//   );
+// };
+export const vendorDispatch = async (
+  workOrderId,
+  productId,
+  formData
+) => {
   return axiosClient.put(
     `${API}/dispatch-product/${workOrderId}/${productId}`,
+    formData,
     {
-      transportBy: transportBy,
-      products: [
-        {
-          workOrderProductId: workOrderProductId,
-          productId: productId,
-          dispatchQty: qty,
-        },
-      ],
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     }
   );
 };
-
 export const getPoPdf = async (fileName) => {
   const res = await axiosClient.get(
     `WorkOrder/po/${encodeURIComponent(fileName)}`,
@@ -214,4 +245,18 @@ export const getAcceptedWorkOrders = async (
   });
 
   return res.data;
+};
+
+
+
+
+export const getDispatchPdf = async (fileName) => {
+  const response = await axiosClient.get(
+    `/workorder/get-dispatch-pdf/${fileName}`,
+    {
+      responseType: "blob"
+    }
+  );
+
+  return response.data;
 };
