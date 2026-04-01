@@ -9,6 +9,10 @@
   min-height: 100vh !important;
   overflow: hidden;
   background: radial-gradient(circle at top left, #66959e, #1c1d1d);
+  /* background: radial-gradient(circle at top left, #66959e, #1c1d1d); */
+  /* background-color: rgba(61, 60, 60, 0.151); */
+  /* background-color: rgb(34, 47, 69); */
+  /* background-color: #000000; */
 }
 
 /* ===============================

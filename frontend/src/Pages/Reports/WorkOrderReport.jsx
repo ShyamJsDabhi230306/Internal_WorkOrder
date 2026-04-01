@@ -451,6 +451,7 @@ export default function WorkOrderReport() {
             </button> */}
         <div className="mb-3">
           <input
+          style={{backgroundColor:"rgba(61, 60, 60, 0.151)"}}
             className="form-control"
             placeholder="Global Search (WO No, Product, PONO, Dates...)"
             value={globalSearch}

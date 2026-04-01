@@ -3,7 +3,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* background: radial-gradient(circle at top left, #464747, #1c1d1d); */
     background: radial-gradient(circle at top left, #66959e, #1c1d1d);
+    /* background-color: #147095; */
     position: relative;
     overflow: hidden;
     font-family: 'Inter', sans-serif;

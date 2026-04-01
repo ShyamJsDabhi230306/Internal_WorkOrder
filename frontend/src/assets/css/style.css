@@ -134,10 +134,11 @@
 
 /* HTML: <div class="loader"></div> */
 :root {
+  --primary-color: #425967;
   --font-color: #ffffff;
   --font-title-color: #ffffff;
   --body-color: #0f1115;
-  --bodybg-color: #0d0f14;
+  --bodybg-color: #000000;
   --font-secondary-color: #ffffff;
   --font-light-color: rgba(255, 255, 255, 0.7);
   --grid_color: rgba(72, 190, 206, 0.05);
@@ -165,9 +166,9 @@
   --bs-border-radius: 12px;
 
   /* Premium Glassmorphism Scale */
-  --glass-bg-s1: rgba(255, 255, 255, 0.03);
+  --glass-bg-s1: rgba(13, 148, 186, 0.03);
   /* sidebar/topbar */
-  --glass-bg-s2: rgba(255, 255, 255, 0.05);
+  --glass-bg-s2: #262829ac;
   /* cards */
   --glass-bg-s3: rgba(255, 255, 255, 0.08);
   /* inputs/modals */
