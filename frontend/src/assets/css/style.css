@@ -11736,7 +11736,7 @@ header.header-main .container-fluid .header-right .header-profile .header-profil
 }
 
 header.header-main .container-fluid .header-right .header-profile .upgrade-plan {
-  background-image: url(242838a56424290e37d1.png);
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -19181,7 +19181,7 @@ button:focus:not(:focus-visible) {
 
 .cheatsheet-header {
   min-height: 280px;
-  background-image: url(b37acad78fe20566a437.jpg);
+  background-image: none;
   background-blend-mode: overlay;
   border-radius: 10px;
   background-size: cover;
@@ -19394,7 +19394,7 @@ button:focus:not(:focus-visible) {
 .variable-width .slider_width_1 {
   width: 175px;
   height: 220px;
-  background-image: url(3f77341ef434a5d15cf7.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   -o-object-fit: cover;
@@ -19406,7 +19406,7 @@ button:focus:not(:focus-visible) {
 .variable-width .slider_width_2 {
   width: 250px;
   height: 220px;
-  background-image: url(3f77341ef434a5d15cf7.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   -o-object-fit: cover;
@@ -19418,7 +19418,7 @@ button:focus:not(:focus-visible) {
 .variable-width .slider_width_3 {
   width: 225px;
   height: 220px;
-  background-image: url(3f77341ef434a5d15cf7.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   -o-object-fit: cover;
@@ -19430,7 +19430,7 @@ button:focus:not(:focus-visible) {
 .variable-width .slider_width_4 {
   height: 220px;
   width: 200px;
-  background-image: url(3f77341ef434a5d15cf7.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   -o-object-fit: cover;
@@ -19442,7 +19442,7 @@ button:focus:not(:focus-visible) {
 .variable-width .slider_width_5 {
   width: 350px;
   height: 220px;
-  background-image: url(3f77341ef434a5d15cf7.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   -o-object-fit: cover;
@@ -19454,7 +19454,7 @@ button:focus:not(:focus-visible) {
 .variable-width .slider_width_6 {
   width: 275px;
   height: 220px;
-  background-image: url(3f77341ef434a5d15cf7.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   -o-object-fit: cover;
@@ -24939,7 +24939,7 @@ button:focus:not(:focus-visible) {
 
 .welcome-card .welcome-card-content {
   background-color: rgba(var(--primary), 0.6);
-  background-image: url(5121c3302eb1f06371c9.png);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -25074,7 +25074,7 @@ button:focus:not(:focus-visible) {
 .product-offer-card {
   color: var(--white);
   text-align: center;
-  background-image: url(f5500c10be2246fe09d0.jpg);
+  background-image: none;
   background-blend-mode: overlay;
   background-size: cover;
   background-repeat: no-repeat;
@@ -25102,7 +25102,7 @@ button:focus:not(:focus-visible) {
 
 .payment-details-card {
   overflow: hidden;
-  background-image: url(c3d838668fc945124df7.png);
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: bottom;
@@ -25165,7 +25165,7 @@ button:focus:not(:focus-visible) {
 
 .recent-order-table .nav-tabs .nav-link.active {
   background-color: var(--white) !important;
-  background-image: url(cf0757cbe6b2636acf74.png);
+  background-image: none;
   background-position: center;
   background-repeat: no-repeat;
   color: rgba(var(--primary), 1) !important;
@@ -27871,7 +27871,7 @@ input[type=range]::-webkit-slider-thumb {
 
 .faq-header {
   min-height: 280px;
-  background-image: url(b37acad78fe20566a437.jpg);
+  background-image: none;
   background-blend-mode: overlay;
   border-radius: 10px;
   background-size: cover;
@@ -28285,7 +28285,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 .coming-soon {
-  background-image: url(41292787252a245a885c.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;
@@ -31043,7 +31043,7 @@ input[type=range]::-webkit-slider-thumb {
   display: flex;
   align-items: center;
   text-align: center;
-  background-image: url(fa1f52d77e700f84f29c.png);
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -31110,7 +31110,7 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 .login-form-container {
-  background-image: url(fa1f52d77e700f84f29c.png);
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   width: 100%;
@@ -33340,7 +33340,7 @@ input[type=range]::-webkit-slider-thumb {
   max-height: 561px;
   overflow: auto;
   padding: 0.375rem 0.75rem;
-  background-image: url(7ad58be5aefaded3330f.jpg);
+  background-image: none;
   background-color: rgba(var(--light), 1);
   background-blend-mode: overlay;
   border-radius: var(--app-border-radius);
@@ -40105,7 +40105,7 @@ input[type=range]::-webkit-slider-thumb {
 .maintenance {
   min-height: 100vh;
   position: relative;
-  background-image: url(5a26c6f94edb6f3a8bfa.png);
+  background-image: none;
   background-position: right;
   background-repeat: no-repeat;
   background-size: contain;
@@ -41213,7 +41213,7 @@ input[type=range]::-webkit-slider-thumb {
 .profile-container .image-details .profile-image {
   width: 100%;
   height: 200px;
-  background-image: url(89d72051cfea97909efe.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: var(--bs-border-radius);
@@ -41268,7 +41268,7 @@ input[type=range]::-webkit-slider-thumb {
 .profile-container .image-details .profile-pic .avatar-upload .avatar-preview>div {
   width: 100%;
   height: 100%;
-  background-image: url(3ac0847569bcec6851e2.png);
+  background-image: none;
   border-radius: 100%;
   background-color: rgb(var(--warning), 1);
   border: 4px dashed rgb(var(--dark), 1);
@@ -41375,7 +41375,7 @@ input[type=range]::-webkit-slider-thumb {
 .post-div .post {
   width: 100%;
   height: 400px;
-  background-image: url(1aef5b5a0672be102ebf.jpg);
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -42699,7 +42699,7 @@ input[type=range]::-webkit-slider-thumb {
 .team-chat-container {
   width: 100%;
   height: 250px;
-  background-image: url(7ad58be5aefaded3330f.jpg);
+  background-image: none;
   background-color: rgba(var(--light), 0.8);
   background-blend-mode: overlay;
   border-radius: var(--app-border-radius);
@@ -43109,7 +43109,7 @@ body[class="ltr dark"] .team-chat-container {
 }
 
 .box-layout {
-  background-image: url(379a4d88052546ea75d2.jpg);
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -43638,7 +43638,7 @@ body[class="ltr dark"] .team-chat-container {
 }
 
 .education-profile-card {
-  background-image: url(ba4b1332ebbe9bc8b53a.png);
+  background-image: none;
   background-size: auto;
   background-repeat: no-repeat;
   background-position: right top;
@@ -44299,7 +44299,7 @@ body[class="ltr dark"] .team-chat-container {
   width: 100%;
   height: 100%;
   background-color: rgba(var(--primary), 1);
-  background-image: url(3ac0847569bcec6851e2.png);
+  background-image: none;
   border-radius: 100%;
   background-size: cover;
   background-repeat: no-repeat;
@@ -47859,7 +47859,7 @@ pre[class*=language-] {
 }
 
 .ticket-details-profile {
-  background-image: url(7ad58be5aefaded3330f.jpg);
+  background-image: none;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top;
@@ -49272,7 +49272,7 @@ pre[class*=language-] {
   position: relative;
   overflow: hidden;
   background-color: rgb(var(--landing-dark));
-  background-image: url(9728c93f7ee339bc0f54.png);
+  background-image: none;
   background-position: bottom right;
   background-repeat: no-repeat;
   background-blend-mode: overlay;

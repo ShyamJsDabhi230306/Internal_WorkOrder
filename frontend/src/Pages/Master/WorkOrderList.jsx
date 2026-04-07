@@ -32,12 +32,35 @@ export default function WorkOrderList() {
     applySearch();
   }, [search, workOrders]);
 
-  const loadData = async () => {
+  // const loadData = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const data = await getWorkOrders();
+  //     const sorted = (data || []).sort((a, b) => b.workOrderId - a.workOrderId);
+  //     setWorkOrders(sorted);
+  //     setFilteredList(sorted);
+  //   } catch (err) {
+  //     console.error("Load Data Error:", err);
+  //     setError("Failed to load work orders. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+    const loadData = async () => {
     setLoading(true);
     setError(null);
     try {
       const data = await getWorkOrders();
-      const sorted = (data || []).sort((a, b) => b.workOrderId - a.workOrderId);
+      
+      // ⭐ NEW: Filter out records that are already "Completed"
+      const activeWorkOrders = (data || []).filter(w => w.status !== "Completed");
+
+      // Sort the active orders by ID (newest first)
+      const sorted = (activeWorkOrders || []).sort((a, b) => b.workOrderId - a.workOrderId);
+      
       setWorkOrders(sorted);
       setFilteredList(sorted);
     } catch (err) {
