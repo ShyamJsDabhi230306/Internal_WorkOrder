@@ -1,37 +1,28 @@
-import { getDispatchPdf } from "../API/workOrderApi";
-import { getFileNameFromPath } from "../utils/fileUtils";
+import { API_URL } from "../config/constant";
 
 export default function DispatchFileActions({ filePath }) {
-
   if (!filePath) return <span className="text-muted">—</span>;
 
-  const fileName = getFileNameFromPath(filePath);
-
-  const handleView = async () => {
+  const handleView = () => {
     try {
-
-      const blob = await getDispatchPdf(fileName);
-
-      const url = window.URL.createObjectURL(blob);
-
-      window.open(url, "_blank");
-
+      // Remove '/api/' from the end of API_URL to get the base server URL
+      const baseUrl = API_URL.replace(/\/api\/?$/, "/");
+      const fullUrl = `${baseUrl}${filePath}`;
+      window.open(fullUrl, "_blank");
     } catch (err) {
       console.error(err);
-      alert("Failed to open PDF");
+      alert("Failed to open file");
     }
   };
 
   return (
     <div className="d-flex gap-2 justify-content-center">
-
       <button
         className="btn btn-sm btn-outline-primary"
         onClick={handleView}
       >
         <i className="bi bi-eye"></i>
       </button>
-
     </div>
   );
-}
+}
